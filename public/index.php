@@ -11,6 +11,9 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// require __DIR__ . '/../app/autoload.php';
+require __DIR__ . '/../app-view/autoload.php';
+
 session_start();
 
 // Instantiate the app
