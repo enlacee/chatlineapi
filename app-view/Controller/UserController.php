@@ -42,7 +42,7 @@ class UserController
 		$sth->execute(array(1));
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
-			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, email, password, id_rol) VALUES (?, ?, ?, ?, ?)');
+			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol) VALUES (?, ?, ?, ?, ?)');
 			$sth->bindValue(1, 'juan');
 			$sth->bindValue(2, 'suarez');
 			$sth->bindValue(3, 'juan@pprios.com');
@@ -60,7 +60,7 @@ class UserController
 			$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
 
 			$sth = $dbh->prepare(
-				'INSERT INTO users ( firstname, lastname, email, password, id_rol, area, cargo, status, chat_plus, at_created, at_updated)' .
+				'INSERT INTO users ( firstname, lastname, username, password, id_rol, area, cargo, status, chat_plus, at_created, at_updated)' .
 				' VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?)'
 			);
 			$sth->bindValue(1, $faker->firstname, \PDO::PARAM_INT);

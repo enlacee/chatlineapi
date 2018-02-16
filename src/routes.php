@@ -3,16 +3,16 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use AppView\Model\UserTable;
+use AppView\Model\GroupTable;
+use AppView\Model\RolTable;
+use \Zend\Db\TableGateway\TableGateway;
+
+const TABLE_USERS = 'users';
+const TABLE_GROUPS = 'groups';
+const TABLE_ROLES = 'roles';
 
 // Routes
-
-// $app->get('/[{name}]', function (Request $request, Response $response, array $args) {
-//     // Sample log message
-//     $this->logger->info("Slim-Skeleton '/' route");
-
-//     // Render index view
-//     return $this->renderer->render($response, 'index.phtml', $args);
-// });
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
@@ -21,32 +21,62 @@ $app->add(function ($req, $res, $next) {
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-
+/**
+ * list all users
+ */
 $app->get('/users', function ($request, $response, $args) {
 
-	$data = array(
-		array('id'=> '1', 'name'=> 'pepe lucho'),
-		array('id'=> '2', 'name'=> 'juan carlos'),
-		array('id'=> '3', 'name'=> 'liza malitr')
-	);
-
-
+	$adapter = $this->get('adapter');
+	$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+	$data = $table->fetchAll();
 
 	return $response->withJson($data);
 });
 
+/**
+ * list all groups
+ */
+$app->get('/groups', function ($request, $response, $args) {
 
-$app->post('/login', function ($request, $response, $args) {
-	// Show book identified by $args['id']
-	$data['status'] = true;
-	$data['data'] = 'pepe lucho';
+	$adapter = $this->get('adapter');
+	$table = new GroupTable(new TableGateway(TABLE_GROUPS, $adapter));
+	$data = $table->fetchAll();
 
 	return $response->withJson($data);
+});
+
+/**
+ * list all roles
+ */
+$app->get('/roles', function ($request, $response, $args) {
+
+	$adapter = $this->get('adapter');
+	$table = new RolTable(new TableGateway(TABLE_ROLES, $adapter));
+	$data = $table->fetchAll();
+
+	return $response->withJson($data);
+});
+
+$app->post('/login', function ($request, $response, $args) {
+	
+	$rs = false;
+
+	$adapter = $this->get('adapter');
+	$username = $request->getParam('username');
+	$password = $request->getParam('password');
+
+	if (!empty($username) && !empty($password)) {
+		$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+		$rs = $table->login($username, $password);
+	}
+
+	return $response->withJson($rs);
 });
 
 
 /**
- * API REST
+ * Create data fake for all tables
+ * /faker/fill
  */
 $app->group('/faker', function () use ($app) {
 
