@@ -3,7 +3,8 @@
 namespace AppView\Controller;
 
 // use \Faker\Factory;
-// use \Zend\Db\Adapter;
+use \Faker\Factory;
+use \Zend\Db\Adapter\Adapter;
 
 class UserController
 {
