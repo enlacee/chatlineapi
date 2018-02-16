@@ -9,6 +9,11 @@ class UserTable
 {
 	protected $tableGateWay;
 
+	protected $fields = array(
+		'id_user', 'firstname', 'lastname', 'username', 'area', 'cargo', 'status',
+		'chat_plus', 'at_created', 'at_updated', 'id_rol'
+	);
+
 	public function __construct(TableGateway $tableGateWay) {
 
 		$this->tableGateWay = $tableGateWay;
@@ -17,19 +22,20 @@ class UserTable
 	public function fetchAll()
 	{
 		$resultSet = $this->tableGateWay->select(array('status' => 1));
+
 		return $resultSet->toArray();
 	}
 
 	public function login($username, $password)
 	{
-
 		// $rs = $this->tableGateWay->select(array(
 		// 	'username' => $username,
 		// 	'password' => $password
 		// ));
-
-		$rs = $this->tableGateWay->select(function (Select $select) use ($username, $password) {
-			$select->columns(array('id_user', 'firstname', 'lastname', 'username', 'at_created', 'at_updated', 'id_rol'));
+		
+		$fields = $this->fields;
+		$rs = $this->tableGateWay->select(function (Select $select) use ($username, $password, $fields) {
+			$select->columns($fields);
 			$select->where(array('username' => $username));
 			$select->where(array('password' => $password));
 			$select->limit(1);
@@ -40,36 +46,51 @@ class UserTable
 	}
 
 	public function getUser($id)
-	{
+	{	
+		$rs = false;
 		$id = (int) $id;
-		$rowset = $this->tableGateWay->select(array('id_user' => $id));
-		$row = $rowset->current();
-		if (!$row) {
-			throw new \Exception("Could not find row $id");
+		$fields = $this->fields;
+
+		$row = $this->tableGateWay->select(function (Select $select) use ($id, $fields) {
+			$select->columns($fields);
+			$select->where(array('id_user' => $id));
+			$select->limit(1);
+		});
+
+		if ($row) {
+			$rs = $row->toArray();
 		}
-		return $row;
+
+		return $rs;
 	}
 
-	public function saveUser(array $dataPersona)
-	{
-		$id = (int) $dataPersona['id_user']; 
+	/**
+	 * Update or Insert user
+	 * @return bool | int
+	 */
+	public function save(array $dataPersona)
+	{	
+		$rs = false;
+		$id = isset($dataPersona['id_user']) ? $dataPersona['id_user'] : false; 
 		unset($dataPersona['id_user']);
 		
-		if ($id == 0) {
-			$this->tableGateway->insert($dataPersona);
+		if ($id === false) {
+			$dataPersona['at_created'] = date('Y-m-d H:i:s');
+			$rs = $this->tableGateWay->insert($dataPersona);
+
 		} else {
-		
 			if ($this->getUser($id)) {
-				$this->tableGateway->update($dataPersona, array('id_user' => $id));
-			} else {
-				throw new \Exception('Persona id does not exist');
+				$dataPersona['at_updated'] = date('Y-m-d H:i:s');
+				$rs = $this->tableGateWay->update($dataPersona, array('id_user' => $id));
 			}
 		}
+
+		return $rs;
 	}
 	
-	public function deleteUser($id)
+	public function delete($id)
 	{
-		$this->tableGateway->delete(array('id_user' => (int) $id));
+		return $this->tableGateWay->delete(array('id_user' => (int) $id));
 	}
 
 }

@@ -3,11 +3,6 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-use AppView\Model\UserTable;
-use AppView\Model\GroupTable;
-use AppView\Model\RolTable;
-use \Zend\Db\TableGateway\TableGateway;
-
 const TABLE_USERS = 'users';
 const TABLE_GROUPS = 'groups';
 const TABLE_ROLES = 'roles';
@@ -22,64 +17,24 @@ $app->add(function ($req, $res, $next) {
 });
 
 /**
- * list all users
+ * all routers
  */
-$app->get('/users', function ($request, $response, $args) {
+$app->group('/v1', function () use ($app) {
 
-	$adapter = $this->get('adapter');
-	$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
-	$data = $table->fetchAll();
+	$app->get('/faker-data',	'\AppView\Controller\FakerDataController:getAll');
 
-	return $response->withJson($data);
-});
+	// Users
+	$app->get('/users',			'\AppView\Controller\UserController:getAll');
+	$app->get('/users/{id}',	'\AppView\Controller\UserController:getById');
+	$app->post('/users',		'\AppView\Controller\UserController:post');
+	$app->put('/users',			'\AppView\Controller\UserController:put');
+	$app->delete('/users',		'\AppView\Controller\UserController:delete');
+	$app->post('/users-login',	'\AppView\Controller\UserController:login');
 
-/**
- * list all groups
- */
-$app->get('/groups', function ($request, $response, $args) {
+	// Groups
+	$app->get('/groups',		'\AppView\Controller\GroupController:getAll');
 
-	$adapter = $this->get('adapter');
-	$table = new GroupTable(new TableGateway(TABLE_GROUPS, $adapter));
-	$data = $table->fetchAll();
-
-	return $response->withJson($data);
-});
-
-/**
- * list all roles
- */
-$app->get('/roles', function ($request, $response, $args) {
-
-	$adapter = $this->get('adapter');
-	$table = new RolTable(new TableGateway(TABLE_ROLES, $adapter));
-	$data = $table->fetchAll();
-
-	return $response->withJson($data);
-});
-
-$app->post('/login', function ($request, $response, $args) {
-	
-	$rs = false;
-
-	$adapter = $this->get('adapter');
-	$username = $request->getParam('username');
-	$password = $request->getParam('password');
-
-	if (!empty($username) && !empty($password)) {
-		$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
-		$rs = $table->login($username, $password);
-	}
-
-	return $response->withJson($rs);
-});
-
-
-/**
- * Create data fake for all tables
- * /faker/fill
- */
-$app->group('/faker', function () use ($app) {
-
-	$app->get('/fill', '\AppView\Controller\UserController:getAll');
+	// Roles
+	$app->get('/roles',			'\AppView\Controller\RolController:getAll');
 });
 

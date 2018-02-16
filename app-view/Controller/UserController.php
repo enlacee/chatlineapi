@@ -2,9 +2,10 @@
 
 namespace AppView\Controller;
 
-// use \Faker\Factory;
-use \Faker\Factory;
 use \Zend\Db\Adapter\Adapter;
+use \Zend\Db\TableGateway\TableGateway;
+
+use AppView\Model\UserTable;
 
 class UserController
 {
@@ -23,77 +24,92 @@ class UserController
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$faker = \Faker\Factory::create('es_PE');
-		$dbh = $this->pdo;
+		$adapter = $this->adapter;
+		$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+		$data = $table->fetchAll();
 
-		// insert roles
-		$sth = $dbh->prepare('SELECT id_rol FROM roles');
-		$sth->execute();
-		$rsDat = $sth->fetchAll();
-		if (is_array($rsDat) && count($rsDat) == 0) {
-			$roles = array('superadmin', 'admin', 'user');
-			foreach ($roles as $key => $value) {
-				$sth = $dbh->prepare('INSERT INTO roles ( name ) VALUES (?)');
-				$sth->execute(array($value));
-			}
-		}
-
-		// insert user
-		$sth = $dbh->prepare('SELECT id_user FROM users WHERE id_rol = ?');
-		$sth->execute(array(1));
-		$rsDat = $sth->fetchAll();
-		if (is_array($rsDat) && count($rsDat) == 0) {
-			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol) VALUES (?, ?, ?, ?, ?)');
-			$sth->bindValue(1, 'juan');
-			$sth->bindValue(2, 'suarez');
-			$sth->bindValue(3, 'juan@pprios.com');
-			$sth->bindValue(4, 'juan');
-			$sth->bindValue(5, 1, \PDO::PARAM_INT);
-			$sth->execute();
-		}
-
-		$area = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
-		$cargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
-		for ($i=0; $i < 25; $i++) {
-			$randonArea  = $area[\Faker\Provider\Base::numberBetween(0, count($area)-1)];
-			$randonCargo  = $cargo[\Faker\Provider\Base::numberBetween(0, count($cargo)-1)];
-			$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-			$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-
-			$sth = $dbh->prepare(
-				'INSERT INTO users ( firstname, lastname, username, password, id_rol, area, cargo, status, chat_plus, at_created, at_updated)' .
-				' VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?)'
-			);
-			$sth->bindValue(1, $faker->firstname, \PDO::PARAM_INT);
-			$sth->bindValue(2, $faker->lastname, \PDO::PARAM_STR);
-			$sth->bindValue(3, $faker->email, \PDO::PARAM_STR);
-			$sth->bindValue(4, \Faker\Provider\Base::numberBetween(0, 999999999), \PDO::PARAM_STR);
-			$sth->bindValue(5, \Faker\Provider\Base::numberBetween(2, 3), \PDO::PARAM_INT);
-
-			$sth->bindValue(6, $randonArea, \PDO::PARAM_STR);
-			$sth->bindValue(7, $randonCargo, \PDO::PARAM_STR);
-			$sth->bindValue(8, \Faker\Provider\Base::numberBetween(0, 1), \PDO::PARAM_INT);
-			$sth->bindValue(9, \Faker\Provider\Base::numberBetween(0, 1), \PDO::PARAM_INT);
-			$sth->bindValue(10, $dateCreated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
-			$sth->bindValue(11, $dateUpdated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
-			$sth->execute();
-		}
-
-		// insert groups
-		$sth = $dbh->prepare('SELECT id_group FROM groups');
-		$sth->execute();
-		$rsDat = $sth->fetchAll();
-		if (is_array($rsDat) && count($rsDat) == 0) {
-			foreach ($area as $key => $value) {
-				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-				$sth = $dbh->prepare('INSERT INTO groups ( name, at_created ) VALUES (?, ?)');
-				$sth->execute(array($value, $dateCreated->format('Y-m-d H:i:s')));
-			}
-		}
-
-		echo "data faker generated!.<br/>";
-
-		return $response->withJson(array());
+		return $response->withJson($data);
 	}
 
+	public function getById($request, $response, $args)
+	{
+		$rs = false;
+		$id = $args['id'];
+		
+		if ($id) {
+			$adapter = $this->adapter;
+			$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+			$rs = $table->getUser($id);
+		}
+
+		return $response->withJson($rs);
+	}
+
+	public function login($request, $response, $args)
+	{
+		$rs = false;
+
+		$adapter = $this->adapter;
+		$username = $request->getParam('username');
+		$password = $request->getParam('password');
+
+		if (!empty($username) && !empty($password)) {
+			$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+			$rs = $table->login($username, $password);
+		}
+
+		return $response->withJson($rs);
+	}
+
+	public function post($request, $response, $args)
+	{
+		$rs = $this->_postPut($request, $response, $args);
+
+		return $response->withJson($rs);
+	}
+
+	public function put($request, $response, $args)
+	{
+		$rs = $this->_postPut($request, $response, $args);
+
+		return $response->withJson($rs);
+	}
+
+	public function delete($request, $response, $args)
+	{
+		$rs = false;
+		$id = $request->getParam('id_user');
+
+		if ($id) {
+			$table = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
+			$rs = $table->delete($id);
+		}
+
+		return $response->withJson($rs);
+	}
+
+	private function _postPut($request, $response, $args)
+	{
+		$rs = false;
+
+		$dataPersona = array();
+		$inputs = array(
+			'id_user', 'firstname', 'lastname', 'username', 'password',
+			'area', 'cargo', 'status', 'chat_plus', 'id_rol'
+		);
+		foreach ($inputs as $key => $value) {
+			if ($request->getParam($value)) {
+				$dataPersona[$value] = $request->getParam($value);
+			}
+		}
+
+		if (empty($dataPersona['id_rol'])) {
+			$dataPersona['id_rol'] = 3;
+		}
+
+		$table = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
+		$rs = $table->save($dataPersona);
+
+		return $rs;
+	}
 }
