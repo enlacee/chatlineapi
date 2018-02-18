@@ -50,11 +50,19 @@ class UserController
 		$rs = false;
 
 		$adapter = $this->adapter;
+		// var_dump($request->getParams());exit;
 		$username = $request->getParam('username');
 		$password = $request->getParam('password');
 
-		if (!empty($username) && !empty($password)) {
-			$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+		if (empty($username) && empty($password)) {
+			return $rs;
+		}
+
+
+		$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
+		if ($request->getParam('is-admin')) {
+			$rs = $table->login($username, $password, true);
+		} else {
 			$rs = $table->login($username, $password);
 		}
 

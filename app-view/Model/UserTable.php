@@ -26,7 +26,7 @@ class UserTable
 		return $resultSet->toArray();
 	}
 
-	public function login($username, $password)
+	public function login($username, $password, $isAdmin = false)
 	{
 		// $rs = $this->tableGateWay->select(array(
 		// 	'username' => $username,
@@ -34,15 +34,20 @@ class UserTable
 		// ));
 		
 		$fields = $this->fields;
-		$rs = $this->tableGateWay->select(function (Select $select) use ($username, $password, $fields) {
+		$rs = $this->tableGateWay->select(function (Select $select) use ($username, $password, $fields, $isAdmin) {
 			$select->columns($fields);
 			$select->where(array('username' => $username));
 			$select->where(array('password' => $password));
+
+			if ($isAdmin === true) {
+				$select->where(array('id_rol' => array(1, 2)));
+			}
+
 			$select->limit(1);
-			// echo $select->getSqlString();
+			// echo $select->getSqlString();exit;
 		});
 
-		return $rs->toArray();
+		return $rs->current();
 	}
 
 	public function getUser($id)
@@ -76,7 +81,7 @@ class UserTable
 		
 		if ($id === false) {
 			$dataPersona['at_created'] = date('Y-m-d H:i:s');
-			$rs = $this->tableGateWay->insert($dataPersona);
+			$rs = $this->tableGateWay->insert($dataPersona); //$this->tableGateWay->getLastInsertValue();
 
 		} else {
 			if ($this->getUser($id)) {

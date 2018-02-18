@@ -43,10 +43,10 @@ class FakerDataController
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
 			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol) VALUES (?, ?, ?, ?, ?)');
-			$sth->bindValue(1, 'juan');
-			$sth->bindValue(2, 'suarez');
-			$sth->bindValue(3, 'juan@pprios.com');
-			$sth->bindValue(4, 'juan');
+			$sth->bindValue(1, 'jhon');
+			$sth->bindValue(2, 'dowh');
+			$sth->bindValue(3, 'jhon@pprios.com');
+			$sth->bindValue(4, 'clavefacil#123');
 			$sth->bindValue(5, 1, \PDO::PARAM_INT);
 			$sth->execute();
 		}
