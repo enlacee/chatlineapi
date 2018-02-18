@@ -28,11 +28,15 @@ $app->group('/v1', function () use ($app) {
 	$app->get('/users/{id}',	'\AppView\Controller\UserController:getById');
 	$app->post('/users',		'\AppView\Controller\UserController:post');
 	$app->put('/users',			'\AppView\Controller\UserController:put');
-	$app->delete('/users',		'\AppView\Controller\UserController:delete');
+	$app->delete('/users/{id}',	'\AppView\Controller\UserController:delete');
 	$app->post('/users-login',	'\AppView\Controller\UserController:login');
 
 	// Groups
 	$app->get('/groups',		'\AppView\Controller\GroupController:getAll');
+	$app->post('/groups',		'\AppView\Controller\GroupController:post');
+	$app->get('/groups/{id}',	'\AppView\Controller\GroupController:getById');
+	$app->put('/groups/{id}',	'\AppView\Controller\GroupController:put');
+	$app->delete('/groups/{id}','\AppView\Controller\GroupController:delete');
 
 	// Roles
 	$app->get('/roles',			'\AppView\Controller\RolController:getAll');
