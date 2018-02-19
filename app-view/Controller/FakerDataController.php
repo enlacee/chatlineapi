@@ -24,6 +24,8 @@ class FakerDataController
 	{
 		$faker = \Faker\Factory::create('es_PE');
 		$dbh = $this->pdo;
+		$area = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
+		$cargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
 
 		// insert roles
 		$sth = $dbh->prepare('SELECT id_rol FROM roles');
@@ -42,40 +44,42 @@ class FakerDataController
 		$sth->execute(array(1));
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
-			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol) VALUES (?, ?, ?, ?, ?)');
+			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol, dni) VALUES (?, ?, ?, ?, ?, ?)');
 			$sth->bindValue(1, 'jhon');
 			$sth->bindValue(2, 'dowh');
 			$sth->bindValue(3, 'jhon@pprios.com');
 			$sth->bindValue(4, 'clavefacil#123');
 			$sth->bindValue(5, 1, \PDO::PARAM_INT);
+			$sth->bindValue(6, \Faker\Provider\Base::numerify('########'));
 			$sth->execute();
-		}
 
-		$area = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
-		$cargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
-		for ($i=0; $i < 25; $i++) {
-			$randonArea  = $area[\Faker\Provider\Base::numberBetween(0, count($area)-1)];
-			$randonCargo  = $cargo[\Faker\Provider\Base::numberBetween(0, count($cargo)-1)];
-			$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-			$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
+			// inserts data random
+			for ($i=0; $i < 24; $i++) {
+				$randonArea  = $area[\Faker\Provider\Base::numberBetween(0, count($area)-1)];
+				$randonCargo  = $cargo[\Faker\Provider\Base::numberBetween(0, count($cargo)-1)];
+				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
+				$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
 
-			$sth = $dbh->prepare(
-				'INSERT INTO users ( firstname, lastname, username, password, id_rol, area, cargo, status, chat_plus, at_created, at_updated)' .
-				' VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?)'
-			);
-			$sth->bindValue(1, $faker->firstname, \PDO::PARAM_INT);
-			$sth->bindValue(2, $faker->lastname, \PDO::PARAM_STR);
-			$sth->bindValue(3, $faker->email, \PDO::PARAM_STR);
-			$sth->bindValue(4, \Faker\Provider\Base::numberBetween(0, 999999999), \PDO::PARAM_STR);
-			$sth->bindValue(5, \Faker\Provider\Base::numberBetween(2, 3), \PDO::PARAM_INT);
+				$sth = $dbh->prepare(
+					'INSERT INTO users (' .
+					'firstname, lastname, username, password, id_rol, area, cargo, status, chat_plus, at_created, at_updated, dni)' .
+					' VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?, ?)'
+				);
+				$sth->bindValue(1, $faker->firstname, \PDO::PARAM_INT);
+				$sth->bindValue(2, $faker->lastname, \PDO::PARAM_STR);
+				$sth->bindValue(3, $faker->email, \PDO::PARAM_STR);
+				$sth->bindValue(4, \Faker\Provider\Base::numberBetween(0, 999999999), \PDO::PARAM_STR);
+				$sth->bindValue(5, \Faker\Provider\Base::numberBetween(2, 3), \PDO::PARAM_INT);
 
-			$sth->bindValue(6, $randonArea, \PDO::PARAM_STR);
-			$sth->bindValue(7, $randonCargo, \PDO::PARAM_STR);
-			$sth->bindValue(8, \Faker\Provider\Base::numberBetween(0, 1), \PDO::PARAM_INT);
-			$sth->bindValue(9, \Faker\Provider\Base::numberBetween(0, 1), \PDO::PARAM_INT);
-			$sth->bindValue(10, $dateCreated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
-			$sth->bindValue(11, $dateUpdated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
-			$sth->execute();
+				$sth->bindValue(6, $randonArea, \PDO::PARAM_STR);
+				$sth->bindValue(7, $randonCargo, \PDO::PARAM_STR);
+				$sth->bindValue(8, \Faker\Provider\Base::numberBetween(0, 1), \PDO::PARAM_INT);
+				$sth->bindValue(9, \Faker\Provider\Base::numberBetween(0, 1), \PDO::PARAM_INT);
+				$sth->bindValue(10, $dateCreated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
+				$sth->bindValue(11, $dateUpdated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
+				$sth->bindValue(12, \Faker\Provider\Base::numerify('########'));
+				$sth->execute();
+			}
 		}
 
 		// insert groups

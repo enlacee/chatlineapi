@@ -11,7 +11,7 @@ class UserTable
 
 	protected $fields = array(
 		'id_user', 'firstname', 'lastname', 'username', 'area', 'cargo', 'status',
-		'chat_plus', 'at_created', 'at_updated', 'id_rol'
+		'chat_plus', 'at_created', 'at_updated', 'id_rol', 'dni'
 	);
 
 	public function __construct(TableGateway $tableGateWay) {
