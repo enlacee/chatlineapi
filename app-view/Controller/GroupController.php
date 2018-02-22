@@ -18,12 +18,29 @@ class GroupController
 		$this->tableGateway = new GroupTable(new TableGateway(TABLE_GROUPS, $this->adapter));
 	}
 
+	private function getParamGET($request, $inputsAllowed){
+		$data = array();
+		$inputs = $inputsAllowed; // array('id_group', 'name');
+		
+		if (is_array($inputs) && count($request) > 0) {
+			foreach ($inputs as $key => $value) {
+				if ($request->getParam($value)) {
+					$data[$value] = $request->getParam($value);
+				}
+			}
+		}
+
+		return $data;
+	}
+
 	/**
 	 * Get all
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$data = $this->tableGateway->fetchAll();
+		$params = $this->getParamGET($request, array('name'));
+
+		$data = $this->tableGateway->fetchAll($params);
 
 		return $response->withJson($data);
 	}

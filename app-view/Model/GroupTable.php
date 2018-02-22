@@ -14,9 +14,10 @@ class GroupTable
 		$this->tableGateWay = $tableGateWay;
 	}
 
-	public function fetchAll()
+	public function fetchAll($params)
 	{
-		$rs = $this->tableGateWay->select();
+		$where = array_merge(array(), $params);
+		$rs = $this->tableGateWay->select($where);
 
 		return $rs->toArray();
 	}

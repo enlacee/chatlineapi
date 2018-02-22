@@ -14,9 +14,9 @@ class UserController
 
 	public function __construct($container)
 	{
-		$this->adapter = $container->get('adapter');
 		$this->pdo = $container->get('pdo');
-
+		$this->adapter = $container->get('adapter');
+		$this->tableGateway = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
 	}
 
 	/**
@@ -24,9 +24,7 @@ class UserController
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$adapter = $this->adapter;
-		$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
-		$data = $table->fetchAll();
+		$data = $this->tableGateway->fetchAll();
 
 		return $response->withJson($data);
 	}
