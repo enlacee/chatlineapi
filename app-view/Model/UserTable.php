@@ -21,9 +21,9 @@ class UserTable
 
 	public function fetchAll()
 	{
-		$resultSet = $this->tableGateWay->select(array('status' => 1));
+		$rs = $this->tableGateWay->select(array('status' => 1));
 
-		return $resultSet->toArray();
+		return $rs->toArray();
 	}
 
 	public function login($username, $password, $isAdmin = false)
@@ -40,17 +40,18 @@ class UserTable
 			$select->where(array('password' => $password));
 
 			if ($isAdmin === true) {
-				$select->where(array('id_rol' => array(1, 2)));
+				$select->where( array( 'id_rol' => array( 1, 2 ) ) );
+			} else if ($isAdmin === false) {
+				$select->where( array( 'id_rol' => array( 3 ) ) );
 			}
 
-			$select->limit(1);
-			// echo $select->getSqlString();exit;
+			$select->limit(1); // echo $select->getSqlString();exit;
 		});
 
 		return $rs->current();
 	}
 
-	public function getUser($id)
+	public function getById($id)
 	{	
 		$rs = false;
 		$id = (int) $id;
@@ -84,7 +85,7 @@ class UserTable
 			$rs = $this->tableGateWay->insert($dataPersona); //$this->tableGateWay->getLastInsertValue();
 
 		} else {
-			if ($this->getUser($id)) {
+			if ($this->getById($id)) {
 				$dataPersona['at_updated'] = date('Y-m-d H:i:s');
 				$rs = $this->tableGateWay->update($dataPersona, array('id_user' => $id));
 			}
@@ -95,7 +96,7 @@ class UserTable
 	
 	public function delete($id)
 	{
-		return $this->tableGateWay->delete(array('id_user' => (int) $id));
+		return $this->tableGateWay->delete( array( 'id_user' => ( int ) $id ) );
 	}
 
 }

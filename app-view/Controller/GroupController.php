@@ -7,7 +7,7 @@ use \Zend\Db\TableGateway\TableGateway;
 
 use AppView\Model\GroupTable;
 
-class GroupController
+class GroupController extends BaseController
 {
 	private $adapter;
 	private $tableGateway;
@@ -16,21 +16,7 @@ class GroupController
 	{
 		$this->adapter = $container->get('adapter');
 		$this->tableGateway = new GroupTable(new TableGateway(TABLE_GROUPS, $this->adapter));
-	}
 
-	private function getParamGET($request, $inputsAllowed){
-		$data = array();
-		$inputs = $inputsAllowed; // array('id_group', 'name');
-		
-		if (is_array($inputs) && count($request) > 0) {
-			foreach ($inputs as $key => $value) {
-				if ($request->getParam($value)) {
-					$data[$value] = $request->getParam($value);
-				}
-			}
-		}
-
-		return $data;
 	}
 
 	/**
@@ -38,7 +24,7 @@ class GroupController
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$params = $this->getParamGET($request, array('name'));
+		$params = $this->getParamGET($request, array('name')); // params allowed
 
 		$data = $this->tableGateway->fetchAll($params);
 

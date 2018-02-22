@@ -7,16 +7,17 @@ use \Zend\Db\TableGateway\TableGateway;
 
 use AppView\Model\UserTable;
 
-class UserController
+class UserController extends BaseController
 {
 	private $adapter;
 	private $pdo;
+	private $table;
 
 	public function __construct($container)
 	{
 		$this->pdo = $container->get('pdo');
 		$this->adapter = $container->get('adapter');
-		$this->tableGateway = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
+		$this->table = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
 	}
 
 	/**
@@ -24,7 +25,9 @@ class UserController
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$data = $this->tableGateway->fetchAll();
+		$params = $this->getParamGET($request, array('name'));
+
+		$data = $this->table->fetchAll($params);
 
 		return $response->withJson($data);
 	}
@@ -35,9 +38,7 @@ class UserController
 		$id = $args['id'];
 		
 		if ($id) {
-			$adapter = $this->adapter;
-			$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
-			$rs = $table->getUser($id);
+			$rs = $this->table->getById($id);
 		}
 
 		return $response->withJson($rs);
@@ -56,12 +57,10 @@ class UserController
 			return $rs;
 		}
 
-
-		$table = new UserTable(new TableGateway(TABLE_USERS, $adapter));
 		if ($request->getParam('is-admin')) {
-			$rs = $table->login($username, $password, true);
+			$rs = $this->table->login($username, $password, true);
 		} else {
-			$rs = $table->login($username, $password);
+			$rs = $this->table->login($username, $password);
 		}
 
 		return $response->withJson($rs);
