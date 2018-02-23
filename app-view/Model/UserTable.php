@@ -10,8 +10,8 @@ class UserTable
 	protected $tableGateWay;
 
 	protected $fields = array(
-		'id_user', 'firstname', 'lastname', 'username', 'area', 'cargo', 'status',
-		'chat_plus', 'at_created', 'at_updated', 'id_rol', 'dni'
+		'id_user', 'firstname', 'lastname', 'username', 'password', 'dni', 'area', 'cargo', 'status',
+		'chat_plus', 'at_created', 'at_updated', 'id_rol'
 	);
 
 	public function __construct(TableGateway $tableGateWay) {
@@ -19,13 +19,17 @@ class UserTable
 		$this->tableGateWay = $tableGateWay;
 	}
 
-	public function fetchAll()
+	public function fetchAll($params)
 	{
-		$rs = $this->tableGateWay->select(array('status' => 1));
+		$where = array_merge(array(), $params);
+		$rs = $this->tableGateWay->select($where);
 
 		return $rs->toArray();
 	}
 
+	/**
+	 * Get only users with status = 1 (enable)
+	 */
 	public function login($username, $password, $isAdmin = false)
 	{
 		// $rs = $this->tableGateWay->select(array(
@@ -36,6 +40,7 @@ class UserTable
 		$fields = $this->fields;
 		$rs = $this->tableGateWay->select(function (Select $select) use ($username, $password, $fields, $isAdmin) {
 			$select->columns($fields);
+			$select->where(array('status' => 1));
 			$select->where(array('username' => $username));
 			$select->where(array('password' => $password));
 
@@ -96,7 +101,7 @@ class UserTable
 	
 	public function delete($id)
 	{
-		return $this->tableGateWay->delete( array( 'id_user' => ( int ) $id ) );
+		return $this->tableGateWay->delete(array('id_user' => (int)$id));
 	}
 
 }

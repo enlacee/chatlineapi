@@ -25,7 +25,7 @@ class UserController extends BaseController
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$params = $this->getParamGET($request, array('name'));
+		$params = $this->getParamGET($request, array('firstname', 'lastname'));
 
 		$data = $this->table->fetchAll($params);
 
@@ -86,8 +86,7 @@ class UserController extends BaseController
 		$id = $request->getParam('id_user');
 
 		if ($id) {
-			$table = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
-			$rs = $table->delete($id);
+			$rs = $this->table->delete($id);
 		}
 
 		return $response->withJson($rs);
@@ -96,24 +95,29 @@ class UserController extends BaseController
 	private function _postPut($request, $response, $args)
 	{
 		$rs = false;
-
-		$dataPersona = array();
-		$inputs = array(
-			'id_user', 'firstname', 'lastname', 'username', 'password',
+		$inputsAllowed = array(
+			'id_user', 'firstname', 'lastname', 'username', 'password', 'dni',
 			'area', 'cargo', 'status', 'chat_plus', 'id_rol'
 		);
-		foreach ($inputs as $key => $value) {
-			if ($request->getParam($value)) {
-				$dataPersona[$value] = $request->getParam($value);
+		$data = $this->getParamGET($request, $inputsAllowed);
+
+		// exeption POST (auto fill data)
+		if ($request->isPost() === true) {
+			if (empty($data['id_rol'])) {
+				$data['id_rol'] = 3;
+			}
+
+			if (empty($data['status'])) {
+				$data['status'] = 0;
 			}
 		}
 
-		if (empty($dataPersona['id_rol'])) {
-			$dataPersona['id_rol'] = 3;
+		// if exist param id (REST PUT) 
+		if (isset($args['id']) === true) {
+			$data['id_user'] = $args['id'];
 		}
 
-		$table = new UserTable(new TableGateway(TABLE_USERS, $this->adapter));
-		$rs = $table->save($dataPersona);
+		$rs = $this->table->save($data);
 
 		return $rs;
 	}
