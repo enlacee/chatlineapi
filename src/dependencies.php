@@ -44,7 +44,8 @@ $container['adapter'] = function ($c) {
 		'driver' => 'Mysqli',
 		'database' => $db['dbname'],
 		'username' => $db['user'],
-		'password' => $db['pass']
+		'password' => $db['pass'],
+		// 'charset'	=> 'utf8'
 	));
 
 	return $adapter;

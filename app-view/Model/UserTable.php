@@ -22,7 +22,13 @@ class UserTable
 	public function fetchAll($params)
 	{
 		$where = array_merge(array(), $params);
-		$rs = $this->tableGateWay->select($where);
+		// $rs = $this->tableGateWay->select($where);
+		$fields = $this->fields;
+		$rs = $this->tableGateWay->select(function (Select $select) use ($where, $fields) {
+			$select->columns($fields);
+			$select->where(array('id_rol != ?' => 1)); // no filter to SUPERADMINISTRADOR
+			$select->where($where);
+		});
 
 		return $rs->toArray();
 	}
@@ -64,6 +70,7 @@ class UserTable
 
 		$row = $this->tableGateWay->select(function (Select $select) use ($id, $fields) {
 			$select->columns($fields);
+			$select->where(array('id_rol != ?' => 1)); // no filter to SUPERADMINISTRADOR
 			$select->where(array('id_user' => $id));
 			$select->limit(1);
 		});

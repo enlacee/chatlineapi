@@ -25,7 +25,7 @@ class UserController extends BaseController
 	 */
 	public function getAll($request, $response, $args)
 	{
-		$params = $this->getParamGET($request, array('firstname', 'lastname'));
+		$params = $this->getParamGET($request, array('firstname', 'lastname', 'username', 'dni'));
 
 		$data = $this->table->fetchAll($params);
 
