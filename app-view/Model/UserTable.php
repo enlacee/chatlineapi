@@ -64,7 +64,6 @@ class UserTable
 
 	public function getById($id)
 	{	
-		$rs = false;
 		$id = (int) $id;
 		$fields = $this->fields;
 
@@ -75,11 +74,7 @@ class UserTable
 			$select->limit(1);
 		});
 
-		if ($row) {
-			$rs = $row->toArray();
-		}
-
-		return $rs;
+		return $row->current();
 	}
 
 	/**
