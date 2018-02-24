@@ -44,13 +44,14 @@ class FakerDataController
 		$sth->execute(array(1));
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
-			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol, dni) VALUES (?, ?, ?, ?, ?, ?)');
+			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol, dni, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
 			$sth->bindValue(1, 'jhon');
 			$sth->bindValue(2, 'dowh');
 			$sth->bindValue(3, 'jhon@pprios.com');
 			$sth->bindValue(4, 'clavefacil#123');
 			$sth->bindValue(5, 1, \PDO::PARAM_INT);
 			$sth->bindValue(6, \Faker\Provider\Base::numerify('########'));
+			$sth->bindValue(7, 1, \PDO::PARAM_INT);
 			$sth->execute();
 
 			// inserts data random
