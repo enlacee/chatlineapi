@@ -83,10 +83,15 @@ class UserController extends BaseController
 	public function delete($request, $response, $args)
 	{
 		$rs = false;
-		$id = $request->getParam('id_user');
 
-		if ($id) {
-			$rs = $this->table->delete($id);
+		if (isset($args['id']) === true) {
+			
+			// no allowed delete superadministrator
+			if ($args['id'] == 1) {
+				$rs = false;
+			} else {
+				$rs = $this->table->delete($args['id']);
+			}
 		}
 
 		return $response->withJson($rs);
