@@ -12,11 +12,12 @@ class BaseController
 	 */
 	public function getParamGET($request, $inputsAllowed){
 		$data = array();
-		
+
 		if (is_array($inputsAllowed) && count($inputsAllowed) > 0) {
 			foreach ($inputsAllowed as $key => $value) {
-				if ($request->getParam($value)) {
-					$data[$value] = $request->getParam($value);
+				$theValue = $request->getParam($value, false);
+				if ($theValue !== false) {
+					$data[$value] = $theValue;
 				}
 			}
 		}
