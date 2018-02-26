@@ -77,6 +77,19 @@ class UserTable
 		return $row->current();
 	}
 
+	public function getByUserName($username)
+	{	
+
+		$fields = $this->fields;
+		$row = $this->tableGateWay->select(function (Select $select) use ($username, $fields) {
+			$select->columns($fields);
+			$select->where(array('username ' => $username));
+			$select->limit(1);
+		});
+
+		return $row->current();
+	}
+
 	/**
 	 * Update or Insert user
 	 * @return bool | int

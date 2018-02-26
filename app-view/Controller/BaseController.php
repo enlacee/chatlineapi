@@ -16,7 +16,7 @@ class BaseController
 		if (is_array($inputsAllowed) && count($inputsAllowed) > 0) {
 			foreach ($inputsAllowed as $key => $value) {
 				$theValue = $request->getParam($value, false);
-				if ($theValue !== false) {
+				if ($theValue !== false && $theValue !== '') {
 					$data[$value] = $theValue;
 				}
 			}

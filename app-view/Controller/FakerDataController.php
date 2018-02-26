@@ -17,6 +17,11 @@ class FakerDataController
 
 	}
 
+	private function getPasswordGenerated() {
+
+		return password_hash('clavefacil#123', PASSWORD_BCRYPT);
+	}
+
 	/**
 	 * Get all uses
 	 */
@@ -48,7 +53,7 @@ class FakerDataController
 			$sth->bindValue(1, 'jhon');
 			$sth->bindValue(2, 'dowh');
 			$sth->bindValue(3, 'jhon@pprios.com');
-			$sth->bindValue(4, 'clavefacil#123');
+			$sth->bindValue(4, $this->getPasswordGenerated());
 			$sth->bindValue(5, 1, \PDO::PARAM_INT);
 			$sth->bindValue(6, \Faker\Provider\Base::numerify('########'));
 			$sth->bindValue(7, 1, \PDO::PARAM_INT);
@@ -66,10 +71,11 @@ class FakerDataController
 					'firstname, lastname, username, password, id_rol, area, cargo, status, chat_plus, at_created, at_updated, dni)' .
 					' VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?, ?)'
 				);
+				
 				$sth->bindValue(1, $faker->firstname, \PDO::PARAM_INT);
 				$sth->bindValue(2, $faker->lastname, \PDO::PARAM_STR);
 				$sth->bindValue(3, $faker->email, \PDO::PARAM_STR);
-				$sth->bindValue(4, \Faker\Provider\Base::numberBetween(0, 999999999), \PDO::PARAM_STR);
+				$sth->bindValue(4, $this->getPasswordGenerated(), \PDO::PARAM_STR);
 				$sth->bindValue(5, \Faker\Provider\Base::numberBetween(2, 3), \PDO::PARAM_INT);
 
 				$sth->bindValue(6, $randonArea, \PDO::PARAM_STR);
