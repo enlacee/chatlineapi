@@ -6,13 +6,14 @@ use Slim\Http\Response;
 const TABLE_USERS = 'users';
 const TABLE_GROUPS = 'groups';
 const TABLE_ROLES = 'roles';
+const TABLE_GROUPS_USERS = 'groups_users';
 
 // Routes
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
-            // ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            // ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
@@ -38,6 +39,13 @@ $app->group('/v1', function () use ($app) {
 	$app->get('/groups/{id}',	'\AppView\Controller\GroupController:getById');
 	$app->put('/groups/{id}',	'\AppView\Controller\GroupController:put');
 	$app->delete('/groups/{id}','\AppView\Controller\GroupController:delete');
+
+	// Groups Users
+	$app->get('/groups-users',		'\AppView\Controller\GroupUserController:getAll');
+	$app->post('/groups-users',		'\AppView\Controller\GroupUserController:post');
+	$app->get('/groups-users/{id}',	'\AppView\Controller\GroupUserController:getById');
+	// $app->put('/groups-users/{id}',	'\AppView\Controller\GroupUserController:put'); // not usefull for this table
+	$app->delete('/groups-users/{id}','\AppView\Controller\GroupUserController:delete');
 
 	// Roles
 	$app->get('/roles',			'\AppView\Controller\RolController:getAll');
