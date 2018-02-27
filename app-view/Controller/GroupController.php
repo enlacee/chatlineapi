@@ -52,14 +52,7 @@ class GroupController extends BaseController
 	private function _postPut($request, $response, $args)
 	{
 		$rs = false;
-
-		$data = array();
-		$inputs = array('id_group', 'name');
-		foreach ($inputs as $key => $value) {
-			if ($request->getParam($value)) {
-				$data[$value] = $request->getParam($value);
-			}
-		}
+		$data = $this->getParamGET($request, array('id_group', 'name')); // params allowed
 
 		// if exist param id (REST PUT) 
 		if (isset($args['id']) === true) {
