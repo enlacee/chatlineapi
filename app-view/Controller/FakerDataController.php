@@ -10,11 +10,16 @@ class FakerDataController
 	private $adapter;
 	private $pdo;
 
+	private $arrayGroup = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
+	private $arrayCargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
+	private $dateCreated;
+
 	public function __construct($container)
 	{
 		$this->adapter = $container->get('adapter');
 		$this->pdo = $container->get('pdo');
 
+		$this->dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
 	}
 
 	private function getPasswordGenerated() {
@@ -29,8 +34,8 @@ class FakerDataController
 	{
 		$faker = \Faker\Factory::create('es_PE');
 		$dbh = $this->pdo;
-		$area = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
-		$cargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
+		$area = $this->arrayGroup;
+		$cargo = $this->arrayCargo;
 
 		// insert roles
 		$sth = $dbh->prepare('SELECT id_rol FROM roles');
@@ -64,7 +69,7 @@ class FakerDataController
 				$randonArea  = $area[\Faker\Provider\Base::numberBetween(0, count($area)-1)];
 				$randonCargo  = $cargo[\Faker\Provider\Base::numberBetween(0, count($cargo)-1)];
 				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-				$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
+				$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-1 day', 'now', 'America/Lima');
 
 				$sth = $dbh->prepare(
 					'INSERT INTO users (' .
@@ -101,9 +106,57 @@ class FakerDataController
 			}
 		}
 
+		// fill groups users
+		$this->fillGroupUsers();
+
 		echo "data faker generated!.<br/>";
 
 		return $response->withJson(array());
+	}
+
+	private function fillGroupUsers() {
+
+		$dbh = $this->pdo;
+		$sth = $dbh->prepare('SELECT id_group as id FROM groups');
+		$sth->execute();
+		$rsDat = $sth->fetchAll();
+		$dataIdsGroup = array();
+		// fill ids
+		foreach ($rsDat as $key => $value) {
+			$dataIdsGroup[] = $value['id'];
+		}
+
+
+		$sth = $dbh->prepare('SELECT id_user as id FROM users');
+		$sth->execute();
+		$rsDat = $sth->fetchAll();
+		$dataIdsUser = array();
+		// fill ids
+		foreach ($rsDat as $key => $value) {
+			$dataIdsUser[] = $value['id'];
+		}
+
+
+		if (
+			is_array($dataIdsGroup) && count($dataIdsGroup) > 0 &&
+			is_array($dataIdsUser) && count($dataIdsUser) > 0
+		) {
+
+			// each Groups
+			foreach ($dataIdsGroup as $keyGroup => $valueGroup) {
+				$getNumberLimit = (count($dataIdsUser) > 10) ? 12 : count($dataIdsUser);
+				$dataIndexUserRamdon = \Faker\Provider\Base::randomElements($dataIdsUser , $getNumberLimit);
+
+				foreach ($dataIndexUserRamdon as $keyUser => $valueUser) {
+
+					$sth = $dbh->prepare('INSERT INTO groups_users ( id_group, id_user, at_created) VALUES (?, ?, ?)');
+					$sth->bindValue(1, $valueGroup, \PDO::PARAM_INT);
+					$sth->bindValue(2, $valueUser, \PDO::PARAM_INT);
+					$sth->bindValue(3, $this->dateCreated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
+					$sth->execute();
+				}
+			}
+		}
 	}
 
 }
