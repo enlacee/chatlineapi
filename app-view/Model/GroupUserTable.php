@@ -3,6 +3,7 @@
 namespace AppView\Model;
 
 use \Zend\Db\TableGateway\TableGateway;
+use \Zend\Db\Sql\Select;
 
 class GroupUserTable 
 {
@@ -17,7 +18,10 @@ class GroupUserTable
 	public function fetchAll($params)
 	{
 		$where = array_merge(array(), $params);
-		$rs = $this->tableGateWay->select($where);
+		$rs = $this->tableGateWay->select(function (Select $select) use ($where) {
+			$select->where($where);
+			$select->join(TABLE_USERS, 'users.id_user = groups_users.id_user', array('firstname', 'lastname'), 'left');
+		});
 
 		return $rs->toArray();
 	}
