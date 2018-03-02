@@ -11,6 +11,7 @@ class FakerDataController
 	private $pdo;
 
 	private $arrayGroup = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
+	private $arrayGroupSystem = array('ChatPeer');
 	private $arrayCargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
 	private $dateCreated;
 
@@ -99,10 +100,16 @@ class FakerDataController
 		$sth->execute();
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
-			foreach ($area as $key => $value) {
+			
+			$thearea = array_merge($this->arrayGroup, $this->arrayGroupSystem);
+			$theStatus = 1;
+			foreach ($thearea as $key => $value) {
+				if ($value ===  'ChatPeer'){
+					$theStatus = 0;
+				}
 				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-				$sth = $dbh->prepare('INSERT INTO groups ( name, at_created ) VALUES (?, ?)');
-				$sth->execute(array($value, $dateCreated->format('Y-m-d H:i:s')));
+				$sth = $dbh->prepare('INSERT INTO groups ( name, status, at_created) VALUES (?, ?, ?)');
+				$sth->execute(array($value, $theStatus, $dateCreated->format('Y-m-d H:i:s')));
 			}
 		}
 
@@ -117,7 +124,7 @@ class FakerDataController
 	private function fillGroupUsers() {
 
 		$dbh = $this->pdo;
-		$sth = $dbh->prepare('SELECT id_group as id FROM groups');
+		$sth = $dbh->prepare('SELECT id_group as id FROM groups WHERE status = 1');
 		$sth->execute();
 		$rsDat = $sth->fetchAll();
 		$dataIdsGroup = array();

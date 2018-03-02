@@ -16,7 +16,7 @@ class GroupTable
 
 	public function fetchAll($params)
 	{
-		$where = array_merge(array(), $params);
+		$where = array_merge(array('status' => 1), $params);
 		$rs = $this->tableGateWay->select($where);
 
 		return $rs->toArray();
