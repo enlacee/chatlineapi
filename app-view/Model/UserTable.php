@@ -42,24 +42,29 @@ class UserTable
 		// 	'username' => $username,
 		// 	'password' => $password
 		// ));
-		
+		$rs = false;
 		$fields = $this->fields;
-		$rs = $this->tableGateWay->select(function (Select $select) use ($username, $password, $fields, $isAdmin) {
+		$resultSet = $this->tableGateWay->select(function (Select $select) use ($username, $password, $fields, $isAdmin) {
 			$select->columns($fields);
 			$select->where(array('status' => 1));
 			$select->where(array('username' => $username));
 			$select->where(array('password' => $password));
 
 			if ($isAdmin === true) {
-				$select->where( array( 'id_rol' => array( 1, 2 ) ) );
+				$select->where( array( 'id_rol' => array( 1, 2 ) ) ); // Access to SuperAdmin and Admin
 			} else if ($isAdmin === false) {
-				$select->where( array( 'id_rol' => array( 3 ) ) );
+				$select->where( array( 'id_rol' => array( 2, 3 ) ) ); // Access to Admin and User
 			}
 
-			$select->limit(1); // echo $select->getSqlString();exit;
+			// $select->limit(1);  
+			// echo $select->getSqlString();exit;
 		});
 
-		return $rs->current();
+		if (!is_null($resultSet->current())) {
+			$rs = $resultSet->current();
+		}
+
+		return $rs;
 	}
 
 	public function getById($id)

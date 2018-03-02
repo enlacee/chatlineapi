@@ -10,8 +10,21 @@ class FakerDataController
 	private $adapter;
 	private $pdo;
 
-	private $arrayGroup = array('Administracion', 'Contabilidad', 'Sistemas', 'Producccion', 'Marketing', 'Diseño', 'Ventas');
-	private $arrayGroupSystem = array('ChatPeer');
+	private $arrayGroup = array(
+		array('name' => 'Administracion', 'status' => 1),
+		array('name' => 'Contabilidad', 'status' => 1),
+		array('name' => 'Sistemas', 'status' => 1),
+		array('name' => 'Producccion', 'status' => 1),
+		array('name' => 'Marketing', 'status' => 1),
+		array('name' => 'Diseño', 'status' => 1),
+		array('name' => 'Ventas', 'status' => 1),
+		array('name' => 'ChatPeer', 'status' => 0),
+	);
+	private $arrayRoles = array(
+		array('name' => 'superadmin', 'status' => 1),
+		array('name' => 'admin', 'status' => 1),
+		array('name' => 'user', 'status' => 0)
+	);
 	private $arrayCargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
 	private $dateCreated;
 
@@ -43,10 +56,10 @@ class FakerDataController
 		$sth->execute();
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
-			$roles = array('superadmin', 'admin', 'user');
-			foreach ($roles as $key => $value) {
-				$sth = $dbh->prepare('INSERT INTO roles ( name ) VALUES (?)');
-				$sth->execute(array($value));
+
+			foreach ($this->arrayRoles as $key => $value) {
+				$sth = $dbh->prepare('INSERT INTO roles ( name, status ) VALUES (?, ?)');
+				$sth->execute(array($value['name'], $value['status']));
 			}
 		}
 
@@ -55,6 +68,7 @@ class FakerDataController
 		$sth->execute(array(1));
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
+			// create super user
 			$sth = $dbh->prepare('INSERT INTO users ( firstname, lastname, username, password, id_rol, dni, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
 			$sth->bindValue(1, 'jhon');
 			$sth->bindValue(2, 'dowh');
@@ -65,9 +79,9 @@ class FakerDataController
 			$sth->bindValue(7, 1, \PDO::PARAM_INT);
 			$sth->execute();
 
-			// inserts data random
+			// inserts data random (roles '2,3')
 			for ($i=0; $i < 24; $i++) {
-				$randonArea  = $area[\Faker\Provider\Base::numberBetween(0, count($area)-1)];
+				$randonArea  = $area[\Faker\Provider\Base::numberBetween(0, count($area)-1)]['name'];
 				$randonCargo  = $cargo[\Faker\Provider\Base::numberBetween(0, count($cargo)-1)];
 				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
 				$dateUpdated = \Faker\Provider\DateTime::dateTimeBetween('-1 day', 'now', 'America/Lima');
@@ -82,7 +96,7 @@ class FakerDataController
 				$sth->bindValue(2, $faker->lastname, \PDO::PARAM_STR);
 				$sth->bindValue(3, $faker->email, \PDO::PARAM_STR);
 				$sth->bindValue(4, $this->getPasswordGenerated(), \PDO::PARAM_STR);
-				$sth->bindValue(5, \Faker\Provider\Base::numberBetween(2, 3), \PDO::PARAM_INT);
+				$sth->bindValue(5, \Faker\Provider\Base::numberBetween(2, 3), \PDO::PARAM_INT); // chooice rol
 
 				$sth->bindValue(6, $randonArea, \PDO::PARAM_STR);
 				$sth->bindValue(7, $randonCargo, \PDO::PARAM_STR);
@@ -101,15 +115,17 @@ class FakerDataController
 		$rsDat = $sth->fetchAll();
 		if (is_array($rsDat) && count($rsDat) == 0) {
 			
-			$thearea = array_merge($this->arrayGroup, $this->arrayGroupSystem);
-			$theStatus = 1;
+			$thearea = $this->arrayGroup;
 			foreach ($thearea as $key => $value) {
-				if ($value ===  'ChatPeer'){
-					$theStatus = 0;
-				}
 				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
 				$sth = $dbh->prepare('INSERT INTO groups ( name, status, at_created) VALUES (?, ?, ?)');
-				$sth->execute(array($value, $theStatus, $dateCreated->format('Y-m-d H:i:s')));
+				$sth->execute(
+					array(
+						$value['name'],
+						$value['status'],
+						$dateCreated->format('Y-m-d H:i:s')
+					)
+				);
 			}
 		}
 

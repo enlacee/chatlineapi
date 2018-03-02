@@ -15,7 +15,7 @@ class RolTable
 
 	public function fetchAll()
 	{
-		$resultSet = $this->tableGateWay->select();
+		$resultSet = $this->tableGateWay->select(array('status' => 1));
 		return $resultSet->toArray();
 	}
 }

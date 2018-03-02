@@ -51,7 +51,7 @@ class UserController extends BaseController
 		$rs = false;
 
 		$adapter = $this->adapter;
-		// var_dump($request->getParams());exit;
+
 		$username = $request->getParam('username');
 		$password = $request->getParam('password');
 
@@ -60,7 +60,7 @@ class UserController extends BaseController
 		}
 
 		// Check crypted password
-		$passwordCrypt = $this->loginCryptValidation($username, $password); 
+		$passwordCrypt = $this->loginCryptValidation($username, $password);
 		if ($passwordCrypt !== false && is_string($passwordCrypt) === true) {
 			if ($request->getParam('is-admin', false) !== false) {
 				$rs = $this->table->login($username, $passwordCrypt, true);
