@@ -7,7 +7,7 @@ class BaseController
 	/**
 	 * @param $request object
 	 * @param $inputsAllowed filter by array('id_group', 'name');
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getParamGET($request, $inputsAllowed){

@@ -7,6 +7,9 @@ const TABLE_USERS = 'users';
 const TABLE_GROUPS = 'groups';
 const TABLE_ROLES = 'roles';
 const TABLE_GROUPS_USERS = 'groups_users';
+// groupchat
+const TABLE_MESSAGES_RECIPIENTS = 'messages_recipients';
+const TABLE_MESSAGES = 'messages';
 
 // Routes
 $app->add(function ($req, $res, $next) {
@@ -49,5 +52,9 @@ $app->group('/v1', function () use ($app) {
 
 	// Roles
 	$app->get('/roles',			'\AppView\Controller\RolController:getAll');
+
+	//chat
+	$app->get('/chats',			'\AppView\Controller\ChatController:getAll');
+
 });
 
