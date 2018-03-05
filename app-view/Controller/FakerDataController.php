@@ -21,9 +21,9 @@ class FakerDataController
 		array('name' => 'ChatPeer', 'status' => 0),
 	);
 	private $arrayRoles = array(
-		array('name' => 'superadmin', 'status' => 1),
+		array('name' => 'superadmin', 'status' => 0),
 		array('name' => 'admin', 'status' => 1),
-		array('name' => 'user', 'status' => 0)
+		array('name' => 'user', 'status' => 1)
 	);
 	private $arrayCargo = array('Abogado', 'Ingeniero de sistemas', 'Asistente de ventas', 'Recepcionista', 'Ensamblador', 'Fontanero', 'Carpintero');
 	private $dateCreated;
