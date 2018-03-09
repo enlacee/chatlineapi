@@ -53,8 +53,8 @@ $app->group('/v1', function () use ($app) {
 	// Roles
 	$app->get('/roles',			'\AppView\Controller\RolController:getAll');
 
-	//chat
-	$app->get('/chats',			'\AppView\Controller\ChatController:getAll');
+	//chat: obtener la lista de los usuarios por grupo
+	$app->get('/chats-groups',	'\AppView\Controller\GroupUserController:getlistGroupByIdUser');
 
 });
 

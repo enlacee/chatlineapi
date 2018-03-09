@@ -1,9 +1,28 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../app-view/autoload.php'; // add module app-view
 
 use Workerman\Worker;
 use PHPSocketIO\SocketIO;
 
+// start slimframework
+$settings = require __DIR__ . '/../src/settings.php'; // here are return ['settings'=>'']
+
+$app = new \Slim\App($settings);
+
+// Set up dependencies
+require __DIR__ . '/../src/dependencies.php';  //$app->getContainer();
+
+// end slimframework
+$adapter = $app->getContainer()->get('adapter');
+$tableGateWay = new \Zend\Db\TableGateway\TableGateway('users', $adapter);
+$table = new \AppView\Model\UserTable($tableGateWay);
+// $tableGateWay->insert($dataPersona);
+// $data = $table->fetchAll();
+// var_dump($data);exit;
+
+
+// Construct socket
 $usernames = [];
 $numUsers = 0;
 

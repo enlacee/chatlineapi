@@ -19,7 +19,7 @@ class UserTable
 		$this->tableGateWay = $tableGateWay;
 	}
 
-	public function fetchAll($params)
+	public function fetchAll($params = array())
 	{
 		$where = array_merge(array(), $params);
 		// $rs = $this->tableGateWay->select($where);

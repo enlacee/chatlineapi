@@ -26,6 +26,24 @@ class GroupUserTable
 		return $rs->toArray();
 	}
 
+	// lista de groups por idUSER 
+	public function fetchAllv2($params)
+	{
+		$where = array_merge(array(), $params);
+		$rs = $this->tableGateWay->select(function (Select $select) use ($where) {
+			// $select->where($where);
+			$select->join(TABLE_USERS, 'users.id_user = groups_users.id_user', array('firstname', 'lastname'), 'left');
+			$select->join(TABLE_GROUPS, 'groups_users.id_group = groups.id_group', array('name'), 'left');
+			if (isset($where['id_user']) === true) {
+				$select->where(array('users.id_user = ?' => $where['id_user'])); 
+			}
+
+			// echo $select->getSqlString();exit;
+		});
+
+		return $rs->toArray();
+	}
+
 	public function getById($id)
 	{
 		$rs = $this->tableGateWay->select(array($this->id => $id));

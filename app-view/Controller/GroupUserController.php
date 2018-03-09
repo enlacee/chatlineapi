@@ -23,7 +23,7 @@ class GroupUserController extends BaseController
 	 * Get all
 	 */
 	public function getAll($request, $response, $args)
-	{
+	{	
 		$params = $this->getParamGET($request, array('id_group_user', 'id_group', 'id_user')); // params allowed
 
 		$data = $this->tableGateway->fetchAll($params);
@@ -96,5 +96,22 @@ class GroupUserController extends BaseController
 		}
 
 		return $response->withJson($rs);
+	}
+
+
+	/**
+	 ************************************************************
+	 * extra functions
+	 ************************************************************
+	 */
+	// obtener grupos por ID usuario
+	public function getlistGroupByIdUser($request, $response, $args)
+	{
+		// $params = $this->getParamGET($request, array('id_user'));
+		$params = $request->getParams();
+
+		$data = $this->tableGateway->fetchAllv2($params);
+
+		return $response->withJson($data);
 	}
 }

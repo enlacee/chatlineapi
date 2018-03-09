@@ -12,14 +12,14 @@ class ChatTable
 	private $tableGateway;
 
 	public function __construct(TableGateway $tableGateWay) {
-	{
-		$this->tableGateway = $tableGateway;
+
+		$this->tableGateWay = $tableGateWay;
 	}
 
-	public function fetchAll($params)
+	public function fetchAll($params = array())
 	{
-		// return $this->tableGateway->select($params);
 		$where = array_merge(array(), $params);
+		// $rs = $this->tableGateWay->select($where);
 		$rs = $this->tableGateWay->select(function (Select $select) use ($where) {
 			$select->where($where);
 		});
