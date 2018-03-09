@@ -7,7 +7,7 @@ use \Zend\Db\TableGateway\TableGateway;
 use \Psr\Container\ContainerInterface;
 
 use AppView\Model\UserTable;
-
+use AppView\Controller\BaseController;
 
 class UserController extends BaseController
 {
