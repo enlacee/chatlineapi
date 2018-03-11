@@ -17,8 +17,10 @@ class FakerDataController
 		array('name' => 'Producccion', 'status' => 1),
 		array('name' => 'Marketing', 'status' => 1),
 		array('name' => 'Diseño', 'status' => 1),
-		array('name' => 'Ventas', 'status' => 1),
-		array('name' => 'ChatPeer', 'status' => 0),
+		array('name' => 'Ventas', 'status' => 1)
+	);
+	private $arrayGroupPrivate = array(
+		array('name' => 'ChatPeer', 'status' => 0)
 	);
 	private $arrayRoles = array(
 		array('name' => 'superadmin', 'status' => 0),
@@ -49,6 +51,7 @@ class FakerDataController
 		$faker = \Faker\Factory::create('es_PE');
 		$dbh = $this->pdo;
 		$area = $this->arrayGroup;
+		$areaToInsert = array_merge($this->arrayGroup, $this->arrayGroupPrivate);
 		$cargo = $this->arrayCargo;
 
 		// insert roles
@@ -60,6 +63,25 @@ class FakerDataController
 			foreach ($this->arrayRoles as $key => $value) {
 				$sth = $dbh->prepare('INSERT INTO roles ( name, status ) VALUES (?, ?)');
 				$sth->execute(array($value['name'], $value['status']));
+			}
+		}
+
+		// insert groups
+		$sth = $dbh->prepare('SELECT id_group FROM groups');
+		$sth->execute();
+		$rsDat = $sth->fetchAll();
+		if (is_array($rsDat) && count($rsDat) == 0) {
+			
+			foreach ($areaToInsert as $key => $value) {
+				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
+				$sth = $dbh->prepare('INSERT INTO groups ( name, status, at_created) VALUES (?, ?, ?)');
+				$sth->execute(
+					array(
+						$value['name'],
+						$value['status'],
+						$dateCreated->format('Y-m-d H:i:s')
+					)
+				);
 			}
 		}
 
@@ -106,26 +128,6 @@ class FakerDataController
 				$sth->bindValue(11, $dateUpdated->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
 				$sth->bindValue(12, \Faker\Provider\Base::numerify('########'));
 				$sth->execute();
-			}
-		}
-
-		// insert groups
-		$sth = $dbh->prepare('SELECT id_group FROM groups');
-		$sth->execute();
-		$rsDat = $sth->fetchAll();
-		if (is_array($rsDat) && count($rsDat) == 0) {
-			
-			$thearea = $this->arrayGroup;
-			foreach ($thearea as $key => $value) {
-				$dateCreated = \Faker\Provider\DateTime::dateTimeBetween('-2 days', 'now', 'America/Lima');
-				$sth = $dbh->prepare('INSERT INTO groups ( name, status, at_created) VALUES (?, ?, ?)');
-				$sth->execute(
-					array(
-						$value['name'],
-						$value['status'],
-						$dateCreated->format('Y-m-d H:i:s')
-					)
-				);
 			}
 		}
 
