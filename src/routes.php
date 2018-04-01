@@ -8,7 +8,6 @@ const TABLE_GROUPS = 'groups';
 const TABLE_ROLES = 'roles';
 const TABLE_GROUPS_USERS = 'groups_users';
 // groupchat
-const TABLE_MESSAGES_RECIPIENTS = 'messages_recipients';
 const TABLE_MESSAGES = 'messages';
 
 // Routes
@@ -25,11 +24,12 @@ $app->add(function ($req, $res, $next) {
  * all routers
  */
 $app->group('/v1', function () use ($app) {
-
+	// generate test data
 	$app->get('/faker-data',	'\AppView\Controller\FakerDataController:getAll');
 
 	// Users
 	$app->get('/users',			'\AppView\Controller\UserController:getAll');
+	$app->get('/users-diccionary','\AppView\Controller\UserController:getUserDiccionary');
 	$app->get('/users/{id}',	'\AppView\Controller\UserController:getById');
 	$app->post('/users',		'\AppView\Controller\UserController:post');
 	$app->put('/users/{id}',	'\AppView\Controller\UserController:put');
@@ -53,8 +53,16 @@ $app->group('/v1', function () use ($app) {
 	// Roles
 	$app->get('/roles',			'\AppView\Controller\RolController:getAll');
 
+	// Groups
+	$app->get('/messages',		'\AppView\Controller\MessageController:getAll');
+	$app->post('/messages',		'\AppView\Controller\MessageController:post');
+	// $app->get('/messages/{id}',	'\AppView\Controller\MessageController:getById');
+	// $app->put('/messages/{id}',	'\AppView\Controller\MessageController:put');
+	// $app->delete('/messages/{id}','\AppView\Controller\MessageController:delete');
+
 	//chat: obtener la lista de los usuarios por grupo
 	$app->get('/chats-groups',	'\AppView\Controller\GroupUserController:getlistGroupByIdUser');
+	$app->post('/upload-file', '\AppView\Controller\MessageController:uploadFile');
 
 });
 

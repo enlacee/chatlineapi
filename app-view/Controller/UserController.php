@@ -34,6 +34,24 @@ class UserController extends BaseController
 		return $response->withJson($data);
 	}
 
+	/**
+	 * Get all uses diccionary
+	 */
+	public function getUserDiccionary($request, $response, $args)
+	{
+		$data = array();
+		$users = $this->table->getUserDiccionary();
+
+		foreach ($users as $key => $user) {
+			$data["{$user['id_user']}"] = array(
+				"firstname" => $user['firstname'],
+				"lastname" => $user['lastname'],
+			);
+		}
+
+		return $response->withJson($data);
+	}
+
 	public function getById($request, $response, $args)
 	{
 		$rs = false;

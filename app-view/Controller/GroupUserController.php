@@ -15,7 +15,7 @@ class GroupUserController extends BaseController
 	public function __construct($container)
 	{
 		$this->adapter = $container->get('adapter');
-		$this->tableGateway = new GroupUserTable(new TableGateway(TABLE_GROUPS_USERS, $this->adapter));
+		$this->tableGateway = new GroupUserTable(new TableGateway(TABLE_GROUPS_USERS, $this->adapter), $this->adapter);
 
 	}
 
@@ -25,8 +25,13 @@ class GroupUserController extends BaseController
 	public function getAll($request, $response, $args)
 	{	
 		$params = $this->getParamGET($request, array('id_group_user', 'id_group', 'id_user')); // params allowed
+		$exceptIdUser = !empty($request->getParam('except_id_user')) ? $request->getParam('except_id_user') : false;
 
-		$data = $this->tableGateway->fetchAll($params);
+		if ($exceptIdUser === false) {
+			$data = $this->tableGateway->fetchAll($params); // admin
+		} else {
+			$data = $this->tableGateway->fetchAllv3($params, $exceptIdUser); // frontend
+		}
 
 		return $response->withJson($data);
 	}

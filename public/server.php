@@ -15,7 +15,7 @@ require __DIR__ . '/../src/dependencies.php';  //$app->getContainer();
 
 // end slimframework
 $adapter = $app->getContainer()->get('adapter');
-$tableGateWay = new \Zend\Db\TableGateway\TableGateway('users', $adapter);
+$tableGateWay = new \Zend\Db\TableGateway\TableGateway('messages', $adapter);
 $table = new \AppView\Model\UserTable($tableGateWay);
 // $tableGateWay->insert($dataPersona);
 // $data = $table->fetchAll();
@@ -36,7 +36,7 @@ $io->on('connection', function($socket){
 	// cuando se ejecute en el cliente el evento add user 
 	$socket->on('add user', function($username) use ($socket){
 		global $usernames, $numUsers;
-echo "entro ADD USER";
+
 		// guardamos el usuario en sesión
 		$socket->username = $username;
 
@@ -61,15 +61,20 @@ echo "entro ADD USER";
 	$socket->on('new message', function($message) use($socket){
 
 		// me notifico del mensaje que he escrito
+		$message = array_merge($message, array(
+			'at_created'		=> date('Y-m-d H:i:s'),
+			'username_on_server'	=> $socket->username
+		));
 		$socket->emit('new message', array(
 			'action' => 'yo',
-			'message'=> 'Yo: '. $message
+			'message'=> $message
 		));
 
 		// notificamos al resto del mensaje que he escrito
 		$socket->broadcast->emit('new message', array(
 			'action' => 'chat',
-			'message'=> $socket->username .' dice: ' . $message
+			// 'message'=> $socket->username .' dice: ' . $message
+			'message'=> $message
 		));
 	});
 

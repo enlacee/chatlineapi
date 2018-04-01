@@ -33,6 +33,19 @@ class UserTable
 		return $rs->toArray();
 	}
 
+	// lista de los usuarios frontend 
+	public function getUserDiccionary()
+	{
+		$fields = array('id_user', 'firstname', 'lastname');
+		$rs = $this->tableGateWay->select(function (Select $select) use ($fields) {
+			$select->columns($fields);
+			$select->where(array('id_rol != ?' => 1)); // no filter to SUPERADMINISTRADOR
+			$select->where(array('status' => 1));
+		});
+
+		return $rs->toArray();
+	}
+
 	/**
 	 * Get only users with status = 1 (enable)
 	 */
