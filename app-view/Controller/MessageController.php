@@ -27,10 +27,16 @@ class MessageController extends BaseController
 	{
 		// $params = $request->getParams();
 		// $params = $this->getParamGET($request, array('id_message', 'id_group', 'id_emisor', 'id_receptor', 'at_created'));
-		$params['id_emisor'] = $request->getParam('emisor');
-		$params['id_receptor'] = $request->getParam('receptor');
 
-		$data = $this->tableGateway->fetchAll($params);
+		$id_group = $request->getParam('id_group', false);
+
+		if ($id_group !== false) {
+			$data = $this->tableGateway->fetchAllGroup($id_group);
+		} else {
+			$params['id_emisor'] = $request->getParam('emisor');
+			$params['id_receptor'] = $request->getParam('receptor');
+			$data = $this->tableGateway->fetchAll($params);
+		}
 
 		return $response->withJson($data);
 	}
@@ -82,6 +88,7 @@ class MessageController extends BaseController
 	public function uploadFile($request, $response, $args)
 	{
 		$rs = false;
+		$uploadedFiles = $request->getUploadedFiles();
 
 		if ( !isset($_FILES['uploads']) ) {
 			// echo "No files uploaded!!";
