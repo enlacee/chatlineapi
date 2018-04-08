@@ -10,7 +10,20 @@ const TABLE_GROUPS_USERS = 'groups_users';
 // groupchat
 const TABLE_MESSAGES = 'messages';
 
+// $app->options('/{routes:.+}', function ($request, $response, $args) {
+//     return $response;
+// });
+
+// $app->add(function ($request, $response, $next) {
+// 	$response->getBody()->write('BEFORE');
+// 	$response = $next($request, $response);
+// 	$response->getBody()->write('AFTER');
+
+// 	return $response;
+// });
+
 // Routes
+/*
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
@@ -18,6 +31,15 @@ $app->add(function ($req, $res, $next) {
             // ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
+*/
+
+$app->get('/', function (Request $request, Response $response, array $args) {
+	// Sample log message
+	$this->logger->info("Slim-Skeleton '/' route");
+
+	// Render index view
+	return $this->renderer->render($response, 'index.phtml', $args);
 });
 
 /**
