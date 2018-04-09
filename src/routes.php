@@ -41,6 +41,21 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 	// Render index view
 	return $this->renderer->render($response, 'index.phtml', $args);
 });
+$app->get('/test', function (Request $request, Response $response, array $args) {
+	// phpinfo();
+
+    ini_set( 'display_errors', 1 );
+    error_reporting( E_ALL );
+    $from = "emailtest@YOURDOMAIN";
+    $to = "acopitan@gmail.com";
+    $subject = "PHP Mail Test script";
+    $message = "This is a test to check the PHP Mail functionality";
+    $headers = "From:" . $from;
+    mail($to,$subject,$message, $headers);
+    echo "Test email sent";
+
+	exit;
+});
 
 /**
  * all routers
@@ -57,6 +72,7 @@ $app->group('/v1', function () use ($app) {
 	$app->put('/users/{id}',	'\AppView\Controller\UserController:put');
 	$app->delete('/users/{id}',	'\AppView\Controller\UserController:delete');
 	$app->post('/users-login',	'\AppView\Controller\UserController:login');
+	$app->post('/users-forgot-password', '\AppView\Controller\UserController:forgotPassword');
 
 	// Groups
 	$app->get('/groups',		'\AppView\Controller\GroupController:getAll');

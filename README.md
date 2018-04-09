@@ -10,7 +10,7 @@ Crear servidor de prueba
 
 ## Generate test data
 
-	local.chatlineapi.com/v1/faker-data
+	localhost:8080/v1/faker-data
 
 ## start socket 
 
@@ -34,15 +34,6 @@ puede ser un metodo inseguro por dejar abierto a todos el acceso.
 	  Header add Access-Control-Allow-Headers: "Content-Type"
 	  
 	  RewriteEngine On
-
-	  # Some hosts may require you to use the `RewriteBase` directive.
-	  # Determine the RewriteBase automatically and set it as environment variable.
-	  # If you are using Apache aliases to do mass virtual hosting or installed the
-	  # project in a subdirectory, the base path will be prepended to allow proper
-	  # resolution of the index.php file and to redirect to the correct URI. It will
-	  # work in environments without path prefix as well, providing a safe, one-size
-	  # fits all solution. But as you do not need it in this case, you can comment
-	  # the following 2 lines to eliminate the overhead.
 	  RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
 	  RewriteRule ^(.*) - [E=BASE:%1]
 	  
@@ -59,4 +50,51 @@ en windows (buscar headers)
 
 	sudo a2enmod headers
 
-03: reiniciar apache
+03: Reiniciar apache
+
+#### configurar en apache el puerto :8080
+
+	Wampserver > PHP > php.ini
+
+	#Listen 12.34.56.78:80
+	Listen 0.0.0.0:8080
+	Listen [::0]:8080
+
+Configuracion wampserver servicio
+Abrir archivo: ´C:\wamp\wampmanager.ini´ y agregar el puerto
+buscar en este texto : ;WAMPMENULEFTSTART y agregar el puero nuevo
+
+#### configurar el envio de correos
+
+Referencia [video enviar correos electronicos](https://www.youtube.com/watch?v=fiUKU3e1EJ4)
+Pasos a seguir:
+
+###### #A
+
+Referencia base [send mail from localhost/WAMP](http://blog.techwheels.net/send-email-from-localhost-wamp-server-using-sendmail/)
+
+Descargar el archivo [zip sendmail](http://www.glob.com.au/sendmail/sendmail.zip) carpeta \sendmail y extraen dentro de c:\wamp
+Editar el archivo ´sendmail.ini´
+En la linea cambiar a GMAIL
+
+	[sendmail]
+	smtp_server=smtp.gmail.com
+	smtp_port=465
+	.
+	.
+	.
+	auth_username=acopitan.xxx@gmail.com
+	auth_password=clavefacil#xxx
+
+###### #B
+
+Configurar en wampserver abrir ´Wampserver > PHP > php.ini´
+buscar: sendmail_path  
+
+	sendmail_path = C:\wamp\sendmail\sendmail.exe -t
+
+También cambiar la configuracion del SMTP, cambiar el puerto
+
+		[mail function]
+	smtp_port = 465
+

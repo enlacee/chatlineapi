@@ -175,7 +175,7 @@ class UserController extends BaseController
 				if ($passwordCrypt !== false) {
 					unset($data['password']); // no save password (curent is iqual)
 				} else {
-					$data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+					$data['password'] = $this->_encryptPassword($data['password']);
 				}
 			}
 		}
@@ -184,4 +184,103 @@ class UserController extends BaseController
 
 		return $rs;
 	}
+
+	/**
+	 * encriptacion de clave segura 
+	 * @ return string
+	 */
+	private function _encryptPassword($stringPassword)
+	{
+		return password_hash($stringPassword, PASSWORD_BCRYPT);
+	}
+
+	/**
+	 * Return your current password
+	 * @ return void
+	 */
+	public function forgotPassword($request, $response, $args)
+	{
+
+		// vars allowed
+		$inputsAllowed = array('email');
+		$paramRequest = $this->getParamGET($request, $inputsAllowed);
+		$userData = false;
+		$rs = false;
+
+		if (!empty($paramRequest['email']) && filter_var($paramRequest['email'], FILTER_VALIDATE_EMAIL)) {
+			$resultData = $this->table->fetchAll(array('username' => $paramRequest['email']));
+
+			// new password
+			if (is_array($resultData) && count($resultData) === 1) {
+				$userData = $resultData[0];
+				$newPasswordReadble = $this->generateRandomString();
+				$newPassword =  $this->_encryptPassword($newPasswordReadble);
+				$rsUser = $this->table->save(array(
+					'password'	=> $newPassword,
+					'id_user'	=> $userData['id_user']
+				));
+
+				// send mail message
+				if ($rsUser !== false) {
+					$rs = $this->_sendMailTo($paramRequest['email'], $userData, $newPasswordReadble);
+				}
+				
+			}
+			
+		}
+
+		return $response->withJson($rs);
+	}
+
+	/**
+	 * Sen mail to user by email
+	 * @ return void
+	 */
+	private function _sendMailTo($email, $userData, $newPassword)
+	{
+		$rs = false;
+		$strMessage = '<br/>';
+		$strMessage .= 'Hola: ' . mb_strtoupper($userData['firstname']);
+		$strMessage .= '<br/>';
+		$strMessage .= 'tú nueva clave es : ' . $newPassword;
+		$strMessage .= '<br/>';
+		$strMessage .= '<br/>';
+
+		$strHTML = <<<EOT
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td align="left">
+					{$strMessage}
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
+EOT;
+
+		try {
+				$from = 'noreply@noreply.com';
+				$to = $email;
+				$subject = 'Recuperar clave Chat En Linea';
+				$headers = "From: noreply@noreply.com" . "\r\n";
+				$headers .= "Reply-To: ". strip_tags($email) . "\r\n";
+				$headers .= "MIME-Version: 1.0\r\n";
+				$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+				$message = $strHTML;
+				mail($to, $subject, $message, $headers);
+
+				$rs = true;
+			} catch (Exception $e) {
+				$rs = false;
+			}
+
+		return $rs;
+	}
+
 }
