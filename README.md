@@ -2,31 +2,37 @@
 
 with Slim Framework 3
 
+## Manual de Desarrollo
+Crear servidor para pruebas
 
-## SLIM DOC
-Crear servidor de prueba
+	php -S localhost:8000 
 
-	php -S localhost:8000
-
-## Generate test data
+### Generate test data
 
 	localhost:8080/v1/faker-data
 
-## start socket 
+## Iniciar Socket 
+Ejecutar el comando en la terminal bash
 
 	php public/server.php start
 
+## Configurar Apache
+En el puerto :8080 configuración de PHP en el archivo `php.ini`
 
-### Configurar Apache
+	Wampserver > PHP > php.ini
 
-Configurar archivo ´public/.htaccess´
-Agregar las siguientes lineas, para soportar CORS es importante agregar lo siguiente:
+	#Listen 12.34.56.78:80
+	Listen 0.0.0.0:8080
+	Listen [::0]:8080
+
+Configuración **wampserver** aplicación
+Abrir archivo: `C:\wamp\wampmanager.ini` y agregar el puerto  
+buscar en este texto : ;WAMPMENULEFTSTART y agregar el puero nuevo 
+
+#### #Paso 01: Fue necesario ya que al subir imagen no lee el MIDLEWARE (slimframework) que respondia con el soporte CORS, metodo por htaccess.
+
+Configurar el archivo `public/.htaccess` para sopote CORS
 puede ser un metodo inseguro por dejar abierto a todos el acceso.
-
-01: Fue necesario ya que al subir imagen no leia el MIDLEWARE que respondia con el soporte CORS, metodo por htaccess
-
-	Header set Access-Control-Allow-Origin "*"
-
 
 	<IfModule mod_rewrite.c>
 	  Header add Access-Control-Allow-Origin "*"
@@ -45,36 +51,43 @@ puede ser un metodo inseguro por dejar abierto a todos el acceso.
 	  RewriteRule ^ index.php [QSA,L]
 	</IfModule>
 
-02: Activar el modulo ´Headers´ de apache
+#### #Paso 02: Activar el modulo `Headers` de apache
 en windows (buscar headers)
 
 	sudo a2enmod headers
 
-03: Reiniciar apache
+Paso ultimo reiniciar apache
 
-#### configurar en apache el puerto :8080
+## Configurar base de datos
 
-	Wampserver > PHP > php.ini
+#### #Paso 01: Generar la base de datos
 
-	#Listen 12.34.56.78:80
-	Listen 0.0.0.0:8080
-	Listen [::0]:8080
+El modelo de base de datos se encuentra en `src\database.mwb` instalar la apliación si aún no lo tienes [descargar workbench](https://www.mysql.com/products/workbench/)
+Abrir y generar el modelo de base de datos llamado **chatline**, dentro de la aplicación
 
-Configuracion wampserver servicio
-Abrir archivo: ´C:\wamp\wampmanager.ini´ y agregar el puerto
-buscar en este texto : ;WAMPMENULEFTSTART y agregar el puero nuevo
+	Database > Forward Enginneer
 
-#### configurar el envio de correos
+#### #Paso 02: Configurar
 
-Referencia [video enviar correos electronicos](https://www.youtube.com/watch?v=fiUKU3e1EJ4)
-Pasos a seguir:
+La configuración de la base de datos se encuentra en `src/settings.php` y cambiar los valores
+cambiar a los valores según la configuracion interna o agregar la configuración por defecto **root**
 
-###### #A
+		'database' => [
+			'host' => 'localhost',
+			'user' => 'root',
+			'pass' => '',
+			'dbname' => 'chatline',
+		],
+
+## Configurar el envio de correos (en windows)
+
+Referencia [video enviar correos electronicos](https://www.youtube.com/watch?v=fiUKU3e1EJ4) pasos a seguir:
+
+#### #Paso 01
 
 Referencia base [send mail from localhost/WAMP](http://blog.techwheels.net/send-email-from-localhost-wamp-server-using-sendmail/)
 
-Descargar el archivo [zip sendmail](http://www.glob.com.au/sendmail/sendmail.zip) carpeta \sendmail y extraen dentro de c:\wamp
-Editar el archivo ´sendmail.ini´
+Descargar el archivo [zip sendmail](http://www.glob.com.au/sendmail/sendmail.zip) carpeta \sendmail y extraer dentro de `c:\wamp` y editar el archivo `sendmail.ini`
 En la linea cambiar a GMAIL
 
 	[sendmail]
@@ -86,9 +99,9 @@ En la linea cambiar a GMAIL
 	auth_username=acopitan.xxx@gmail.com
 	auth_password=clavefacil#xxx
 
-###### #B
+#### #Paso 02
 
-Configurar en wampserver abrir ´Wampserver > PHP > php.ini´
+Configurar en wampserver abrir `Wampserver > PHP > php.ini`
 buscar: sendmail_path  
 
 	sendmail_path = C:\wamp\sendmail\sendmail.exe -t

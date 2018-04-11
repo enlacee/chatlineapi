@@ -88,42 +88,26 @@ class MessageController extends BaseController
 	public function uploadFile($request, $response, $args)
 	{
 		$rs = false;
-		$uploadedFiles = $request->getUploadedFiles();
+		$imgs = array();
 
 		if ( !isset($_FILES['uploads']) ) {
 			// echo "No files uploaded!!";
 			return $response->withJson($rs);
 		}
 
-		$imgs = array();
-
 		$files = $_FILES['uploads'];
 		$cnt = count($files['name']);
 
 		for($i = 0 ; $i < $cnt ; $i++) {
 			if ($files['error'][$i] === 0) {
-				$name = uniqid('img-'.date('Ymd').'-');
+				$ext = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
+				$name = uniqid('img-'.date('Ymd').'-') . '.' . $ext;
 				if (move_uploaded_file($files['tmp_name'][$i], 'uploads/' . $name) === true) {
 					$imgs[] = array('url' => '/uploads/' . $name, 'name' => $files['name'][$i]);
 				}
-
 			}
 		}
 
-		// $imageCount = count($imgs);
-
-		// if ($imageCount == 0) {
-		// 	echo 'No files uploaded!!  <p><a href="/">Try again</a>';
-		// 	return;
-		// }
-
-		// $plural = ($imageCount == 1) ? '' : 's';
-
-		// foreach($imgs as $img) {
-		// 	printf('%s <img src="%s" width="50" height="50" /><br/>', $img['name'], $img['url']);
-		// }
-
 		return $response->withJson($imgs);
 	}
-
 }
