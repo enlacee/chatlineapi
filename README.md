@@ -29,6 +29,10 @@ Configuración **wampserver** aplicación
 Abrir archivo: `C:\wamp\wampmanager.ini` y agregar el puerto  
 buscar en este texto : ;WAMPMENULEFTSTART y agregar el puero nuevo 
 
+## Configurar PHP limite de subida de archivo
+
+	PHP > Php Settings > upload_max_filesize = 8MB
+
 #### #Paso 01: Fue necesario ya que al subir imagen no lee el MIDLEWARE (slimframework) que respondia con el soporte CORS, metodo por htaccess.
 
 Configurar el archivo `public/.htaccess` para sopote CORS
