@@ -42,7 +42,7 @@ Iniciar wampserver:
 	
 	Inicio > Wampserver
 
-[start wampserver](images/start-wampserver.png);
+![start wampserver](images/start-wampserver.png);
 
 1. Detener la base de datos MYSQL: `Icono Wampserver > MySQL > Service administration wampmysqld > stop service`
 Ahora solo queda cambiar el puerto web por defecto de 80 a 8080. Debemos editar el archivo php.ini
@@ -145,7 +145,7 @@ Iniciar XAMPP
 
 Iniciar los modulos de Apache y MYSQL
 
-[start wampserver](images/start-xampp.png);
+![start wampserver](images/start-xampp.png);
 
 1. Descargar el proyecto [CHATLINE](https://github.com/enlacee/chatline) en `c:/xampp/htdocs`
 clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
