@@ -6,7 +6,7 @@ La aplicación consta de 3 componentes para el correcto funcionamiento.
 2. Aplicacion Servicio API REST (**PHP SlimFramework**)
 3. Aplicacion Servicio Socket (**PHP**)
 
-### Instalar herramientas de desarrollo
+### 1. Instalar herramientas de desarrollo
 
 Instalar todas las aplicaciones en el siguiente ordén
 
@@ -27,16 +27,16 @@ Programas editores:
 * [Sublime text v3](https://www.sublimetext.com/) (editor de texto)
 * [Visual Studio Code](https://code.visualstudio.com/) (editor de texto)
 
-Despues de instalar los **programas de ejecucion**, y **programas editores** instalar por ultimo los programas servidores (pero no iniciar o arrancar el programa eso lo veremos en el siguiente paso)
+Despues de instalar los **programas de ejecucion**, y **programas editores** instalar por ultimo los **programas servidores** (pero no iniciar o arrancar el programa eso lo veremos en el siguiente paso)
 
-### 02.Instalar y configurar servidores
+### 2. Instalar y configurar servidores
 
-#### Configurar GITHUB
+#### 2.1 Configurar GITHUB
 
 Necesitamos configurar github creando una conección por el protocolo SSH
 debes seguir los [siguientes pasos](https://help.github.com/articles/connecting-to-github-with-ssh/)
 
-#### Configurar Wampserver como servidor (Aplicacion Servicio API REST)
+#### 2.2 Configurar Wampserver como servidor (Aplicacion Servicio API REST)
 
 Iniciar wampserver: 
 	
@@ -44,7 +44,11 @@ Iniciar wampserver:
 
 ![start wampserver](images/start-wampserver.png);
 
-1. Detener la base de datos MYSQL: `Icono Wampserver > MySQL > Service administration wampmysqld > stop service`
+**1**
+Detener la base de datos MYSQL: 
+	
+	Icono Wampserver > MySQL > Service administration wampmysqld > stop service
+
 Ahora solo queda cambiar el puerto web por defecto de 80 a 8080. Debemos editar el archivo php.ini
 
 	Wampserver > PHP > php.ini
@@ -55,12 +59,14 @@ Modificar como se muestra:
 	Listen 0.0.0.0:8080
 	Listen [::0]:8080
 
-2. Configurarció opcional: configurar los los accesos directos de wampserver aplicacion que siguen con el puerto por defecto al puerto 8080.
+**2**
+Configurarció opcional: configurar los los accesos directos de wampserver aplicacion que siguen con el puerto por defecto al puerto 8080.
 Buscar en el archivo el texto: ;WAMPMENULEFTSTART y agregar el puero 8080 
 
 	http://localhost/		=> http://localhost:8080/
 
-3. Descargar el proyecto [CHATLINEAPI](https://github.com/enlacee/chatlineapi) en c:/wamp/www
+**3**
+Descargar el proyecto [CHATLINEAPI](https://github.com/enlacee/chatlineapi) en `c:/wamp/www`
 clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
 
 ``` bash
@@ -68,9 +74,10 @@ clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta 
 	git clone https://github.com/enlacee/chatlineapi.git
 ```
 
-despues de descargar el proyecto debemos de configurar el virtualhost para indicarle la nueva ruta del servidor que sera: c:/wamp/www/chatlineapi/public
+despues de descargar el proyecto debemos de configurar el virtualhost para indicarle la nueva ruta del servidor que sera: `c:/wamp/www/chatlineapi/public`
 
-4. Configurar el virtualhost por defecto que se encuentra en:
+**4**
+Configurar el virtualhost por defecto que se encuentra en:
 
 	Wampserver > Apache > htttpd-vhosts.conf
 
@@ -88,11 +95,13 @@ la variable `Require all granted` es necesario para que otras Computadoras de la
 	  </Directory>
 	</VirtualHost>
 
-5. Configurar en PHP el limite del tamaño del archivo, como limite seran 8M.
+**5**
+Configurar en PHP el limite del tamaño del archivo, como limite seran 8M.
 
 	Wampserver > PHP > Php Settings > upload_max_filesize = 8MB
 
-6. Configurar Apache
+**6**
+Configurar Apache
 
 Agregar o modificar el archivo `c:/wamp/www/chatlineapi/public/.htaccess`
 
@@ -122,7 +131,8 @@ Luego de esto necesitarmos activar el modulo `Headers` de apache sino dara error
 
 	Wampserver > Apache > Apache modules > headers_module
 
-7. Cambiar el usuario y la clave para acceder a la base de datos
+**7**
+Cambiar el usuario y la clave para acceder a la base de datos
 que se encuentra en la dirección `c:/xampp/htdocs/src/settings.php`
 cambiar a los valores según la configuracion interna o agregar la configuración por defecto **root**
 
@@ -137,7 +147,7 @@ Por ultimo reiniciar wampserver
 
 	Wampserver > Restart all services
 
-#### Configurar XAMPP como servidor web(Aplicacion front-end)
+#### 2.3 Configurar XAMPP como servidor web(Aplicacion front-end)
 
 Iniciar XAMPP
 
@@ -147,8 +157,9 @@ Iniciar los modulos de Apache y MYSQL
 
 ![start wampserver](images/start-xampp.png);
 
-1. Descargar el proyecto [CHATLINE](https://github.com/enlacee/chatline) en `c:/xampp/htdocs`
-clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
+**1**
+Descargar el proyecto [CHATLINE](https://github.com/enlacee/chatline) en `c:/xampp/htdocs`
+Clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
 
 ``` bash
 	git clone git@github.com:enlacee/chatline.git
