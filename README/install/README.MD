@@ -238,4 +238,4 @@ Acceso para el administrador del chat:
 	
 	localhost/admin
 
-Para acceder a la aplicacion de cualquier equipo que perteneca a la red 
+Para acceder a la aplicacion de cualquier equipo que perteneca a la red usar el numero de IP
