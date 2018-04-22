@@ -34,7 +34,7 @@ Despues de instalar los **programas de ejecucion**, y **programas editores** ins
 #### Configurar GITHUB
 
 Necesitamos configurar github creando una conección por el protocolo SSH
-debes seguir los ![siguientes pasos](https://help.github.com/articles/connecting-to-github-with-ssh/)
+debes seguir los [siguientes pasos](https://help.github.com/articles/connecting-to-github-with-ssh/)
 
 #### Configurar Wampserver como servidor (Aplicacion Servicio API REST)
 
@@ -42,7 +42,7 @@ Iniciar wampserver:
 	
 	Inicio > Wampserver
 
-![start wampserver](images/start-wampserver.png);
+[start wampserver](images/start-wampserver.png);
 
 1. Detener la base de datos MYSQL: `Icono Wampserver > MySQL > Service administration wampmysqld > stop service`
 Ahora solo queda cambiar el puerto web por defecto de 80 a 8080. Debemos editar el archivo php.ini
@@ -60,11 +60,13 @@ Buscar en el archivo el texto: ;WAMPMENULEFTSTART y agregar el puero 8080
 
 	http://localhost/		=> http://localhost:8080/
 
-3. Descargar el proyecto ![CHATLINEAPI](https://github.com/enlacee/chatlineapi) en c:/wamp/www
+3. Descargar el proyecto [CHATLINEAPI](https://github.com/enlacee/chatlineapi) en c:/wamp/www
 clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
 
+``` bash
 	git clone git@github.com:enlacee/chatlineapi.git
 	git clone https://github.com/enlacee/chatlineapi.git
+```
 
 despues de descargar el proyecto debemos de configurar el virtualhost para indicarle la nueva ruta del servidor que sera: c:/wamp/www/chatlineapi/public
 
@@ -97,6 +99,7 @@ Agregar o modificar el archivo `c:/wamp/www/chatlineapi/public/.htaccess`
 * Permitir el acceso con CORS
 * Sobreescribir las URLS
 
+``` 
 	<IfModule mod_rewrite.c>
 	  Header add Access-Control-Allow-Origin "*"
 	  Header add Access-Control-Allow-Methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS"
@@ -113,7 +116,7 @@ Agregar o modificar el archivo `c:/wamp/www/chatlineapi/public/.htaccess`
 	  RewriteCond %{REQUEST_FILENAME} !-f
 	  RewriteRule ^ index.php [QSA,L]
 	</IfModule>
-
+```
 
 Luego de esto necesitarmos activar el modulo `Headers` de apache sino dara error al reiniciar el servidor
 
@@ -142,14 +145,15 @@ Iniciar XAMPP
 
 Iniciar los modulos de Apache y MYSQL
 
-![start wampserver](images/start-xampp.png);
+[start wampserver](images/start-xampp.png);
 
-1. Descargar el proyecto ![CHATLINE](https://github.com/enlacee/chatline) en `c:/xampp/htdocs`
+1. Descargar el proyecto [CHATLINE](https://github.com/enlacee/chatline) en `c:/xampp/htdocs`
 clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
 
+``` bash
 	git clone git@github.com:enlacee/chatline.git
 	git clone https://github.com/enlacee/chatline.git
-
+```
 
 
 
