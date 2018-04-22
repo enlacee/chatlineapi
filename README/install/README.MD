@@ -44,7 +44,7 @@ Iniciar wampserver:
 
 ![start wampserver](images/start-wampserver.png);
 
-**1**
+**1**  
 Detener la base de datos MYSQL: 
 	
 	Icono Wampserver > MySQL > Service administration wampmysqld > stop service
@@ -59,13 +59,13 @@ Modificar como se muestra:
 	Listen 0.0.0.0:8080
 	Listen [::0]:8080
 
-**2**
-Configurarció opcional: configurar los los accesos directos de wampserver aplicacion que siguen con el puerto por defecto al puerto 8080.
+**2**  
+Configuración opcional: configurar los los accesos directos de wampserver aplicacion que siguen con el puerto por defecto al puerto 8080.
 Buscar en el archivo el texto: ;WAMPMENULEFTSTART y agregar el puero 8080 
 
 	http://localhost/		=> http://localhost:8080/
 
-**3**
+**3**  
 Descargar el proyecto [CHATLINEAPI](https://github.com/enlacee/chatlineapi) en `c:/wamp/www`
 clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
 
@@ -76,7 +76,7 @@ clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta 
 
 despues de descargar el proyecto debemos de configurar el virtualhost para indicarle la nueva ruta del servidor que sera: `c:/wamp/www/chatlineapi/public`
 
-**4**
+**4**  
 Configurar el virtualhost por defecto que se encuentra en:
 
 	Wampserver > Apache > htttpd-vhosts.conf
@@ -95,12 +95,12 @@ la variable `Require all granted` es necesario para que otras Computadoras de la
 	  </Directory>
 	</VirtualHost>
 
-**5**
+**5**  
 Configurar en PHP el limite del tamaño del archivo, como limite seran 8M.
 
 	Wampserver > PHP > Php Settings > upload_max_filesize = 8MB
 
-**6**
+**6**  
 Configurar Apache
 
 Agregar o modificar el archivo `c:/wamp/www/chatlineapi/public/.htaccess`
@@ -131,7 +131,7 @@ Luego de esto necesitarmos activar el modulo `Headers` de apache sino dara error
 
 	Wampserver > Apache > Apache modules > headers_module
 
-**7**
+**7**  
 Cambiar el usuario y la clave para acceder a la base de datos
 que se encuentra en la dirección `c:/xampp/htdocs/src/settings.php`
 cambiar a los valores según la configuracion interna o agregar la configuración por defecto **root**
@@ -157,7 +157,7 @@ Iniciar los modulos de Apache y MYSQL
 
 ![start wampserver](images/start-xampp.png);
 
-**1**
+**1**  
 Descargar el proyecto [CHATLINE](https://github.com/enlacee/chatline) en `c:/xampp/htdocs`
 Clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta antes de clonar)
 
