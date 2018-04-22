@@ -143,9 +143,15 @@ cambiar a los valores según la configuracion interna o agregar la configuració
 			'dbname' => 'chatline',
 		],
 
-Por ultimo reiniciar wampserver
+Reiniciar los servicios wampserver
 
 	Wampserver > Restart all services
+
+**8**  
+Generar los datos base y de prueba
+Acceder por el navegador web a la URL:
+
+	localhost:8080/v1/faker-data
 
 #### 2.3 Configurar XAMPP como servidor web(Aplicacion front-end)
 
@@ -166,7 +172,70 @@ Clonar el repositorio. (eliminar todos los archivos que existan en esta carpeta 
 	git clone https://github.com/enlacee/chatline.git
 ```
 
+**2**  
+Iniciar proyecto situarse dentro del proyecto
+
+	cd chatline
+
+**3**  
+Instalar las dependencias con `npm` o `yarn`
+
+	yarn install
+	npm install
+
+Este proceso demora unos minutos dejar instalando.
+
+**4**  
+Ver el numero de tu IPv4 Address ir a: `Inicio > CMD`
+
+	ipconfig
+
+Si es necesario cambiar el numero de IP en el archivo `src/app/variable-global.service.ts`  
+de `192.168.1.40` a `abc.xyz.a.bb`
+
+	public apiURLBase:string = 'http://192.168.1.40:8080';
+	public apiURL:string = 'http://192.168.1.40:8080/v1';
+	public apiURLsocket: string = 'http://192.168.1.40:2020';
+
+**apiURLBase**: La url base del API REST
+**apiURL**: La url del API REST version 1
+**apiURLsocket**: La url del socket que utilizamos para emitir los mensajes de los usuarios
+
+**5**  
+GENERAR EL LOS ARCHIVOS PARA PRODUCCION
+
+	ng build --prod --base-href ./
+
+Los archivos web se generan en el directorio `dist`  
+Cortar todos los archivos y pegarlos dentro de `C:\xampp\htdocs`
+
+**6**  
+Debemos configurar el servidor apache con las siguientes instrucciones del archivo `.htaccess`
+
+	RewriteEngine on
+	RewriteCond %{REQUEST_FILENAME} -s [OR]
+	RewriteCond %{REQUEST_FILENAME} -l [OR]
+	RewriteCond %{REQUEST_FILENAME} -d
+	RewriteRule ^.*$ - [NC,L]
+	 
+	RewriteRule ^(.*) /index.html [NC,L] 
+
+#### 2.3 Iniciar el socket
+
+	cd C:\wamp\www\chatlineapi
+	php public/server.php start
+
+![start wampserver](images/start-socketphp.png);
 
 
+### 2. Acceder a la aplicación
 
+Acesso para los usuarios del chat:
 
+	localhost
+
+Acceso para el administrador del chat:
+	
+	localhost/admin
+
+Para acceder a la aplicacion de cualquier equipo que perteneca a la red 
