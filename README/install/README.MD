@@ -228,7 +228,7 @@ Debemos configurar el servidor apache con las siguientes instrucciones del archi
 ![start wampserver](images/start-socketphp.png);
 
 
-### 2. Acceder a la aplicación
+### 3. Acceder a la aplicación
 
 Acesso para los usuarios del chat:
 
